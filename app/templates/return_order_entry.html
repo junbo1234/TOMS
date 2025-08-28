@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+{% block title %}退货单入库{% endblock %}
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 fw-bold text-dark mb-1">
+                <i class="fas fa-warehouse me-2 text-primary"></i>退货单入库
+            </h2>
+            <p class="text-muted mb-0">处理退货单入库测试数据</p>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-question-circle me-1"></i>帮助
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-cog me-1"></i>设置
+            </button>
+        </div>
+    </div>
+
+    <form id="entry-form" class="needs-validation" novalidate>
+        <!-- 基础信息区 -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2 text-primary"></i>退货单基础信息
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- 退货单号 -->
+                    <div class="col-md-2">
+                        <label for="entryOrderCode" class="form-label">
+                            退货单号 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-file-invoice"></i>
+                            </span>
+                            <input type="text" class="form-control" id="entryOrderCode" name="entryOrderCode" 
+                                   placeholder="示例：RK202410010001" required>
+                        </div>
+                    </div>
+                    
+                    <!-- 仓库编码 -->
+                    <div class="col-md-2">
+                        <label for="warehouseCode" class="form-label">
+                            仓库编码 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-warehouse"></i>
+                            </span>
+                            <input type="text" class="form-control" id="warehouseCode" name="warehouseCode" 
+                                   placeholder="示例：WH001" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品明细区 -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-boxes me-2 text-primary"></i>商品明细
+                </h5>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary me-3" id="detail-count-badge">1 项</span>
+                    <div class="input-group" style="width: 150px;">
+                            <span class="input-group-text">
+                                <i class="fas fa-list-ol"></i>
+                            </span>
+                            <input type="number" class="form-control" id="detail-count" name="detail_count" 
+                                   min="1" max="10" value="1" required
+                                   data-fields='[
+                                       {"label":"商品编码","idPrefix":"itemCode","namePrefix":"itemCode","placeholder":"请输入商品编码","required":true,"icon":"fas fa-barcode"},
+                                       {"label":"计划数量","idPrefix":"planQty","namePrefix":"planQty","placeholder":"请输入计划数量","required":true,"type":"number","min":1,"icon":"fas fa-sort-numeric-up"},
+                                       {"label":"实际数量","idPrefix":"actualQty","namePrefix":"actualQty","placeholder":"请输入实际数量","required":true,"type":"number","min":0,"icon":"fas fa-sort-numeric-down"}
+                                   ]'>
+                        </div>
+                </div>
+            </div>
+            <div class="card-body" id="detail-fields">
+                <!-- 初始明细项将由JS自动生成 -->
+            </div>
+        </div>
+
+        <!-- 操作按钮区 -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body text-center">
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-paper-plane me-2"></i>生成并推送数据
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" id="preview-btn">
+                        <i class="fas fa-eye me-2"></i>预览数据
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
+                        <i class="fas fa-undo me-2"></i>重置表单
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- JSON预览区 -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-code me-2 text-primary"></i>JSON预览
+            </h5>
+            <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-secondary" id="copy-json">
+                    <i class="fas fa-copy me-1"></i>复制
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="expand-json">
+                    <i class="fas fa-expand me-1"></i>展开
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <pre class="mb-0"><code class="language-json" id="json-preview">// 加载中...</code></pre>
+        </div>
+    </div>
+</div>
+
+<!-- 成功提示模态框 -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-check-circle me-2"></i>操作成功
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">退货单数据已成功生成并推送到队列！</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 错误提示模态框 -->
+<div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-circle me-2"></i>操作失败
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0" id="error-message">处理请求时出错，请稍后重试</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<!-- 引入Highlight.js库 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/json.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/return_order_entry.js') }}"></script>
+{% endblock %}

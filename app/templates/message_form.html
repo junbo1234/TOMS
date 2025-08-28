@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{{ menu_name }}消息生成</h2>
+    <p class="text-muted">目标队列: {{ queue_name }}</p>
+    
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        {% for field in form %}
+            {% if field.type != 'SubmitField' and field.type != 'CSRFTokenField' %}
+                <div class="mb-3">
+                    {{ field.label(class="form-label") }}
+                    {{ field(class="form-control") }}
+                    {% if field.description %}
+                        <div class="form-text">{{ field.description }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-lightning"></i> 生成消息
+        </button>
+    </form>
+</div>
+{% endblock %}

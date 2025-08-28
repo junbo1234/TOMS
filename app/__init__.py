@@ -1,0 +1,46 @@
+# author:音十
+# time: 2025/7/31 14:56
+# app/__init__.py
+from flask import Flask, redirect, url_for
+from config import config
+from app.routes import order_download, order_delivery, dashboard, refund_order, return_order_notice, stockout_push, return_order_entry, exchange_order  # 导入蓝图
+import atexit
+
+
+def create_app() -> Flask:
+    """
+    创建Flask应用（工厂函数）
+    """
+    app = Flask(__name__)
+    app.config.from_object(config)
+
+    # 注册蓝图（订单下载：URL前缀/order_download）
+    app.register_blueprint(order_download.order_download_bp)
+    # 注册蓝图（销售订单发货：URL前缀/order_delivery）
+    app.register_blueprint(order_delivery.order_delivery_bp)
+    # 注册蓝图（仪表盘：URL前缀/dashboard）
+    app.register_blueprint(dashboard.dashboard_bp)
+    # 注册蓝图（退款单生成：URL前缀/refund_order）
+    app.register_blueprint(refund_order.refund_order_bp)
+    # 注册蓝图（通知单入库：URL前缀/return_order_notice）
+    app.register_blueprint(return_order_notice.return_order_notice_bp)
+    # 注册蓝图（出库单推送：URL前缀/stockout_push）
+    app.register_blueprint(stockout_push.stockout_push_bp)
+    # 注册蓝图（退货单入库：URL前缀/return_order_entry）
+    app.register_blueprint(return_order_entry.return_order_entry_bp)
+    # 注册蓝图（换货单生成：URL前缀/exchange_order）
+    app.register_blueprint(exchange_order.exchange_order_bp)
+
+    # 根路径路由 - 重定向到仪表盘
+    @app.route('/')
+    def index():
+        return redirect(url_for('dashboard.index'))
+
+    # 注册应用关闭时的清理函数
+    @atexit.register
+    def cleanup():
+        """应用关闭时清理资源"""
+        from app.utils.rabbitmq import close_rabbitmq_connection
+        close_rabbitmq_connection()
+
+    return app

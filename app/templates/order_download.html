@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 fw-bold text-dark mb-1">
+                <i class="fas fa-download me-2 text-primary"></i>订单下载
+            </h2>
+            <p class="text-muted mb-0">生成和下载订单测试数据</p>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-question-circle me-1"></i>帮助
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-cog me-1"></i>设置
+            </button>
+        </div>
+    </div>
+
+    <form id="download-form" class="needs-validation" novalidate>
+        <!-- 基础信息区 -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2 text-primary"></i>订单基础信息
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- 仓库编码 -->
+                    <div class="col-md-2">
+                        <label for="warehouseCode" class="form-label">
+                            仓库编码 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-warehouse"></i>
+                            </span>
+                            <input type="text" class="form-control" id="warehouseCode" name="warehouseCode" 
+                                   placeholder="示例：WH001" required>
+                        </div>
+                    </div>
+                    
+                    <!-- 店铺ID -->
+                    <div class="col-md-2">
+                        <label for="storeId" class="form-label">
+                            店铺ID <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-store"></i>
+                            </span>
+                            <input type="text" class="form-control" id="storeId" name="storeId" 
+                                   placeholder="示例：ST001" required>
+                        </div>
+                    </div>
+                    
+                    <!-- 收货地址 -->
+                    <div class="col-md-2">
+                        <label for="address" class="form-label">
+                            收货地址 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </span>
+                            <input type="text" class="form-control" id="address" name="address" 
+                                   placeholder="示例：北京市朝阳区XX路XX小区" required>
+                        </div>
+                    </div>
+                    
+                    <!-- 平台订单号 -->
+                    <div class="col-md-2">
+                        <label for="platformOrderNo" class="form-label">
+                            平台订单号 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-shopping-cart"></i>
+                            </span>
+                            <input type="text" class="form-control" id="platformOrderNo" name="platformOrderNo" 
+                                   placeholder="示例：PO202410010001" required>
+                        </div>
+                    </div>
+                    
+                    <!-- 支付时间 -->
+                    <div class="col-md-2">
+                        <label for="platformPayTime" class="form-label">
+                            支付时间 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-clock"></i>
+                            </span>
+                            <input type="datetime-local" class="form-control" id="platformPayTime" 
+                                   name="platformPayTime" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品明细区（合并配置和明细） -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-boxes me-2 text-primary"></i>商品明细
+                </h5>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary me-3" id="detail-count-badge">1 项</span>
+                    <div class="input-group" style="width: 200px;">
+                        <span class="input-group-text">
+                            <i class="fas fa-list-ol"></i>
+                        </span>
+                        <input type="number" class="form-control" id="detail-count" name="detail_count" 
+                               min="1" max="10" value="1" required
+                               data-fields='[
+                                   {"label":"商品SKU","idPrefix":"platformOuterSkuCode","namePrefix":"platformOuterSkuCode","placeholder":"请输入商品SKU","required":true,"icon":"fas fa-barcode"},
+                                   {"label":"子订单号","idPrefix":"platformNo","namePrefix":"platformNo","placeholder":"请输入子订单号","required":true,"icon":"fas fa-tag"},
+                                   {"label":"购买数量","idPrefix":"qty","namePrefix":"qty","placeholder":"请输入购买数量","required":true,"type":"number","min":1,"icon":"fas fa-sort-numeric-up"}
+                               ]'>
+                        <button type="button" class="btn btn-outline-secondary" id="generate-details">
+                            <i class="fas fa-magic me-1"></i>生成
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" id="detail-fields">
+                <!-- 此处由JS动态生成明细项 -->
+            </div>
+        </div>
+
+        <!-- 操作按钮区 -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body text-center">
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-download me-2"></i>生成并下载订单数据
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" id="preview-btn">
+                        <i class="fas fa-eye me-2"></i>预览数据
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
+                        <i class="fas fa-undo me-2"></i>重置表单
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- JSON预览区 -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-code me-2 text-primary"></i>JSON预览
+            </h5>
+            <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-secondary" id="copy-json">
+                    <i class="fas fa-copy me-1"></i>复制
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="expand-json">
+                    <i class="fas fa-expand me-1"></i>展开
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <pre class="mb-0"><code class="language-json" id="json-preview">// 请填写表单数据以预览JSON</code></pre>
+        </div>
+    </div>
+</div>
+
+<!-- 成功提示模态框 -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-check-circle me-2"></i>操作成功
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">订单数据已成功生成并推送到队列！</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 错误提示模态框 -->
+<div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>操作失败
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="error-message" class="mb-0">操作失败，请检查输入数据！</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 订单下载页面JavaScript -->
+<script>
+    window.preset = {{ preset|tojson|safe }};
+</script>
+<script src="{{ url_for('static', filename='js/order_download.js') }}"></script>
+{% endblock %}

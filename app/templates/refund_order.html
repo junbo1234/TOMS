@@ -1,0 +1,291 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 fw-bold text-dark mb-1">
+                <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>退款单生成
+            </h2>
+            <p class="text-muted mb-0">生成和下载退款单测试数据</p>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-question-circle me-1"></i>帮助
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-cog me-1"></i>设置
+            </button>
+        </div>
+    </div>
+
+    <form id="refund-form" class="needs-validation" novalidate>
+        <!-- 基础信息区 -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2 text-primary"></i>退款单基础信息
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- 平台交易号 -->
+                    <div class="col-md-2">
+                        <label for="platformOrderNo" class="form-label">
+                            平台交易号 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-shopping-cart"></i>
+                            </span>
+                            <input type="text" class="form-control" id="platformOrderNo" name="platformOrderNo" 
+                                   placeholder="示例：PO202410010001" required>
+                        </div>
+                    </div>
+                     
+                    <!-- 平台退款编号 -->
+                    <div class="col-md-2">
+                        <label for="platformRefundNo" class="form-label">
+                            平台退款编号 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-file-invoice"></i>
+                            </span>
+                            <input type="text" class="form-control" id="platformRefundNo" name="platformRefundNo" 
+                                   placeholder="示例：PR202410010001" required>
+                        </div>
+                    </div>
+                     
+                    <!-- 售后类型 -->
+                    <div class="col-md-2">
+                        <label for="applyType" class="form-label">
+                            售后类型 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-exchange-alt"></i>
+                            </span>
+                            <input type="text" class="form-control" id="applyType" name="applyType" 
+                                   placeholder="0-退货退款，1-仅退款" required>
+                        </div>
+                    </div>
+                     
+                    <!-- 申请原因 -->
+                    <div class="col-md-2">
+                        <label for="applyReason" class="form-label">
+                            申请原因 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-comment-alt"></i>
+                            </span>
+                            <input type="text" class="form-control" id="applyReason" name="applyReason" 
+                                   placeholder="示例：不想要了" value="不想要了" required>
+                        </div>
+                    </div>
+                     
+                    <!-- 售中售后 -->
+                    <div class="col-md-2">
+                        <label for="refundPeriod" class="form-label">
+                            售中售后 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-clock"></i>
+                            </span>
+                            <input type="text" class="form-control" id="refundPeriod" name="refundPeriod" 
+                                   placeholder="示例：售中" required>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row g-4 mt-4">
+                    <!-- 店铺ID -->
+                    <div class="col-md-2">
+                        <label for="storeId" class="form-label">
+                            店铺ID <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-store"></i>
+                            </span>
+                            <input type="text" class="form-control" id="storeId" name="storeId" 
+                                   placeholder="示例：ST001" required>
+                        </div>
+                    </div>
+                     
+                    <!-- 快递单号 -->
+                    <div class="col-md-2">
+                        <label for="expressNo" class="form-label">
+                            快递单号 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-truck"></i>
+                            </span>
+                            <input type="text" class="form-control" id="expressNo" name="expressNo" 
+                                   placeholder="示例：SF1234567890" required>
+                        </div>
+                    </div>
+                     
+                    <!-- 快递名称 -->
+                    <div class="col-md-2">
+                        <label for="expressName" class="form-label">
+                            快递名称 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-box"></i>
+                            </span>
+                            <input type="text" class="form-control" id="expressName" name="expressName" 
+                                   placeholder="示例：顺丰速运" required>
+                        </div>
+                    </div>
+                     
+                    <!-- 平台状态 -->
+                    <div class="col-md-2">
+                        <label for="platformStatus" class="form-label">
+                            平台状态
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-signal"></i>
+                            </span>
+                            <input type="text" class="form-control" id="platformStatus" name="platformStatus" 
+                                   placeholder="默认：10" value="10">
+                        </div>
+                    </div>
+                     
+                    <!-- 订单状态 -->
+                    <div class="col-md-2">
+                        <label for="omsStatus" class="form-label">
+                            订单状态
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-clipboard-check"></i>
+                            </span>
+                            <input type="text" class="form-control" id="omsStatus" name="omsStatus" 
+                                   placeholder="默认：1" value="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 商品明细区 -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-boxes me-2 text-primary"></i>退款明细
+                </h5>
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-primary me-3" id="detail-count-badge">1 项</span>
+                    <div class="input-group" style="width: 200px;">
+                        <span class="input-group-text">
+                            <i class="fas fa-list-ol"></i>
+                        </span>
+                        <input type="number" class="form-control" id="detail-count" name="detail_count" 
+                               min="1" max="10" value="1" required
+                               data-fields='[
+                                   {"label":"子订单号","idPrefix":"platformNo","namePrefix":"platformNo","placeholder":"请输入子订单号","required":true,"icon":"fas fa-tag"},
+                                   {"label":"申请数量","idPrefix":"applyNum","namePrefix":"applyNum","placeholder":"请输入申请数量","required":true,"type":"number","min":1,"icon":"fas fa-sort-numeric-up"}
+                               ]'>
+                        <button type="button" class="btn btn-outline-secondary" id="generate-details">
+                            <i class="fas fa-magic me-1"></i>生成
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body" id="detail-fields">
+                <!-- 此处由JS动态生成明细项 -->
+            </div>
+        </div>
+
+        <!-- 操作按钮区 -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body text-center">
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>生成并推送退款单
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" id="preview-btn">
+                        <i class="fas fa-eye me-2"></i>预览数据
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
+                        <i class="fas fa-undo me-2"></i>重置表单
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- JSON预览区 -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-code me-2 text-primary"></i>JSON预览
+            </h5>
+            <div class="btn-group btn-group-sm">
+                <button type="button" class="btn btn-outline-secondary" id="copy-json">
+                    <i class="fas fa-copy me-1"></i>复制
+                </button>
+                <button type="button" class="btn btn-outline-secondary" id="expand-json">
+                    <i class="fas fa-expand me-1"></i>展开
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <pre class="mb-0"><code class="language-json" id="json-preview">// 请填写表单数据以预览JSON</code></pre>
+        </div>
+    </div>
+</div>
+
+<!-- 成功提示模态框 -->
+<div class="modal fade" id="successModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-check-circle me-2"></i>操作成功
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-0">退款单数据已成功生成并推送到队列！</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-success" data-bs-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 错误提示模态框 -->
+<div class="modal fade" id="errorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>操作失败
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p id="error-message" class="mb-0">操作失败，请检查输入数据！</p>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 退款单生成页面JavaScript -->
+<script>
+    window.preset = {{ preset|tojson|safe }};
+</script>
+<script src="{{ url_for('static', filename='js/refund_order.js') }}"></script>
+{% endblock %}

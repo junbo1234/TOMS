@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试数据生成平台 - 企业级数据管理解决方案</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Prism CSS for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='CSS/style.css') }}" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <!-- Navigation Header -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-gradient-primary shadow-sm">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fas fa-database me-2"></i>
+                <span class="fw-bold">测试数据生成平台</span>
+            </a>
+            
+            <div class="navbar-nav ms-auto">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-user-circle me-1"></i>
+                        管理员
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>设置</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle me-2"></i>帮助</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>退出</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="sidebar-header mb-4">
+                        <h6 class="text-muted text-uppercase fw-bold mb-2">
+                            <i class="fas fa-tasks me-2"></i>功能模块
+                        </h6>
+                    </div>
+                    
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/" data-page="home">
+                                <i class="fas fa-home me-2"></i>
+                                仪表盘
+                            </a>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link submenu-toggle" href="#">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                B2C订单
+                                <i class="fas fa-chevron-down ms-auto"></i>
+                            </a>
+                            <ul class="submenu">
+                                <li>
+                                    <a class="nav-link" href="/order_download/" data-page="order_download">
+                                        <i class="fas fa-download me-2"></i>
+                                        订单下载
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="/order_delivery/" data-page="order_delivery">
+                                        <i class="fas fa-upload me-2"></i>
+                                        订单发货
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link submenu-toggle" href="#">
+                                <i class="fas fa-headset me-2"></i>
+                                售后中心
+                                <i class="fas fa-chevron-down ms-auto"></i>
+                            </a>
+                            <ul class="submenu">
+                                <li>
+                                    <a class="nav-link" href="/refund_order/" data-page="refund_order">
+                                        <i class="fas fa-credit-card me-2"></i>
+                                        退款单生成
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="/exchange_order/" data-page="exchange_order">
+                                        <i class="fas fa-exchange-alt me-2"></i>
+                                        换货单生成
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="/return_order_notice/" data-page="return_order_notice">
+                                        <i class="fas fa-file-alt me-2"></i>
+                                        通知单入库
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link submenu-toggle" href="#">
+                                <i class="fas fa-building me-2"></i>
+                                B2B管理
+                                <i class="fas fa-chevron-down ms-auto"></i>
+                            </a>
+                            <ul class="submenu">
+                                <li>
+                                    <a class="nav-link" href="/stockout_push/" data-page="stockout_push">
+                                        <i class="fas fa-paper-plane me-2"></i>
+                                        出库单推送
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="/return_order_entry/" data-page="return_order_entry">
+                                        <i class="fas fa-undo me-2"></i>
+                                        退货单入库
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link submenu-toggle" href="#">
+                                <i class="fas fa-truck me-2"></i>
+                                调拨管理
+                                <i class="fas fa-chevron-down ms-auto"></i>
+                            </a>
+                            <ul class="submenu">
+                                <li>
+                                    <a class="nav-link" href="/transfer_out/" data-page="transfer_out">
+                                        <i class="fas fa-sign-out-alt me-2"></i>
+                                        调拨出库
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="/transfer_in/" data-page="transfer_in">
+                                        <i class="fas fa-sign-in-alt me-2"></i>
+                                        调拨入库
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/inventory_adjust/" data-page="inventory_adjust">
+                                <i class="fas fa-cubes me-2"></i>
+                                库存调整
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="reserve1">
+                                <i class="fas fa-chart-line me-2"></i>
+                                数据分析
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-page="reserve2">
+                                <i class="fas fa-cogs me-2"></i>
+                                系统配置
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="sidebar-footer">
+                        <div class="card bg-light border-0">
+                            <div class="card-body p-3">
+                                <h6 class="card-title text-muted mb-2">
+                                    <i class="fas fa-info-circle me-2"></i>系统状态
+                                </h6>
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="status-indicator online me-2"></div>
+                                    <small class="text-success">RabbitMQ 连接正常</small>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="status-indicator online me-2"></div>
+                                    <small class="text-success">系统运行正常</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                {% block content %}
+                <!-- 默认仪表盘内容 -->
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2 fw-bold text-dark">仪表盘</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-download me-1"></i>导出
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-print me-1"></i>打印
+                            </button>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                            <i class="fas fa-calendar me-1"></i>本周
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Navigation -->
+                <ul class="nav nav-tabs" id="tabNav" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#tab-home" type="button" role="tab">
+                            <i class="fas fa-home me-1"></i>仪表盘
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content" id="tabContent">
+                    <div class="tab-pane fade show active" id="tab-home" role="tabpanel">
+                        <!-- Dashboard Content -->
+                        <div class="row g-4 mt-3">
+                            <!-- Statistics Cards -->
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card stat-card border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="stat-icon bg-primary-subtle">
+                                                <i class="fas fa-download text-primary"></i>
+                                            </div>
+                                            <div class="ms-3">
+                                                <h6 class="card-title text-muted mb-1">今日下载</h6>
+                                                <h3 class="mb-0 fw-bold text-dark">1,234</h3>
+                                                <small class="text-success">
+                                                    <i class="fas fa-arrow-up me-1"></i>12.5%
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card stat-card border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="stat-icon bg-success-subtle">
+                                                <i class="fas fa-upload text-success"></i>
+                                            </div>
+                                            <div class="ms-3">
+                                                <h6 class="card-title text-muted mb-1">今日回传</h6>
+                                                <h3 class="mb-0 fw-bold text-dark">856</h3>
+                                                <small class="text-success">
+                                                    <i class="fas fa-arrow-up me-1"></i>8.3%
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card stat-card border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="stat-icon bg-warning-subtle">
+                                                <i class="fas fa-clock text-warning"></i>
+                                            </div>
+                                            <div class="ms-3">
+                                                <h6 class="card-title text-muted mb-1">处理中</h6>
+                                                <h3 class="mb-0 fw-bold text-dark">23</h3>
+                                                <small class="text-warning">
+                                                    <i class="fas fa-minus me-1"></i>0%
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-xl-3 col-md-6">
+                                <div class="card stat-card border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div class="stat-icon bg-danger-subtle">
+                                                <i class="fas fa-exclamation-triangle text-danger"></i>
+                                            </div>
+                                            <div class="ms-3">
+                                                <h6 class="card-title text-muted mb-1">错误</h6>
+                                                <h3 class="mb-0 fw-bold text-dark">5</h3>
+                                                <small class="text-danger">
+                                                    <i class="fas fa-arrow-down me-1"></i>2.1%
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 备忘录功能 -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white border-0">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-sticky-note me-2 text-primary"></i>备忘录
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <textarea class="form-control" id="memoContent" rows="5" placeholder="请输入备忘录内容"></textarea>
+                                                <div class="text-end mt-2">
+                                                    <button class="btn btn-primary" type="button" id="saveMemo">
+                                                        <i class="fas fa-save me-1"></i>保存备忘录
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RabbitMQ请求记录 -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white border-0">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-exchange-alt me-2 text-primary"></i>RabbitMQ请求记录
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr>
+                                                        <th>时间</th>
+                                                        <th>队列名称</th>
+                                                        <th>状态</th>
+                                                        <th>请求报文</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="rabbitmqLogsTable">
+                                                    <!-- 数据将通过JavaScript动态加载 -->
+                                                    <tr>
+                                                        <td colspan="4" class="text-center">加载中...</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 菜单请求次数统计 -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white border-0">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-chart-bar me-2 text-primary"></i>菜单请求次数统计
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container" style="height: 300px;">
+                                            <canvas id="menuStatsChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white border-0">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-history me-2 text-primary"></i>最近活动
+                                        </h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="timeline">
+                                            <div class="timeline-item">
+                                                <div class="timeline-marker bg-success"></div>
+                                                <div class="timeline-content">
+                                                    <h6 class="mb-1">订单下载成功</h6>
+                                                    <p class="text-muted mb-0">订单号: PO202410010001 已成功推送到队列</p>
+                                                    <small class="text-muted">2分钟前</small>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-item">
+                                                <div class="timeline-marker bg-primary"></div>
+                                                <div class="timeline-content">
+                                                    <h6 class="mb-1">销售订单回传</h6>
+                                                    <p class="text-muted mb-0">回传数据已成功处理</p>
+                                                    <small class="text-muted">5分钟前</small>
+                                                </div>
+                                            </div>
+                                            <div class="timeline-item">
+                                                <div class="timeline-marker bg-warning"></div>
+                                                <div class="timeline-content">
+                                                    <h6 class="mb-1">系统维护</h6>
+                                                    <p class="text-muted mb-0">RabbitMQ连接已重新建立</p>
+                                                    <small class="text-muted">10分钟前</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 子模板JavaScript区块 -->
+    {% block scripts %}{% endblock %}
+    
+    <!-- Prism JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- 页面导航JavaScript -->
+    <script>
+        // 确保在DOM加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM加载完成，开始初始化导航...');
+            
+            // 展开式菜单逻辑
+            const submenuToggles = document.querySelectorAll('.submenu-toggle');
+            submenuToggles.forEach(toggle => {
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const submenu = this.nextElementSibling;
+                    const icon = this.querySelector('.fa-chevron-down');
+                    
+                    // 切换子菜单显示/隐藏
+                    submenu.classList.toggle('show');
+                    // 旋转箭头图标
+                    icon.style.transform = submenu.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0)';
+                });
+            });
+
+            // 初始展开B2C订单菜单
+            const firstSubmenuToggle = document.querySelector('.submenu-toggle');
+            if (firstSubmenuToggle) {
+                const submenu = firstSubmenuToggle.nextElementSibling;
+                const icon = firstSubmenuToggle.querySelector('.fa-chevron-down');
+                submenu.classList.add('show');
+                icon.style.transform = 'rotate(180deg)';
+            }
+
+            // 导航链接点击事件已在原有代码中处理
+            // 获取所有侧边栏导航链接
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            console.log('找到导航链接数量:', navLinks.length);
+            
+            // 为每个导航链接添加点击事件
+            navLinks.forEach(function(link, index) {
+                console.log(`初始化导航链接 ${index + 1}:`, link.getAttribute('data-page'));
+                
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const pageKey = this.getAttribute('data-page');
+                    console.log('点击了导航链接:', pageKey);
+                    
+                    // 记录菜单请求次数
+                        fetch('/dashboard/increment_menu_count', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ menu_id: pageKey })
+                        });
+                        
+                        // 根据页面类型执行不同的操作
+                        switch(pageKey) {
+                            case 'home':
+                                console.log('准备跳转到仪表盘页面...');
+                                window.location.href = '/dashboard/';
+                                break;
+
+                        case 'order_download':
+                            console.log('准备跳转到订单下载页面...');
+                            window.location.href = '/order_download/';
+                            break;
+
+                        case 'order_delivery':
+                            console.log('准备跳转到订单回传页面...');
+                            window.location.href = '/order_delivery/';
+                            break;
+
+                        case 'refund_order':
+                            console.log('准备跳转到退款单生成页面...');
+                            window.location.href = '/refund_order/';
+                            break;
+
+                        case 'exchange_order':
+                            console.log('准备跳转到换货单生成页面...');
+                            window.location.href = '/exchange_order/';
+                            break;
+
+                        case 'return_order_notice':
+                            console.log('准备跳转到通知单入库页面...');
+                            window.location.href = '/return_order_notice/';
+                            break;
+
+                        case 'stockout_push':
+                            console.log('准备跳转到出库单推送页面...');
+                            window.location.href = '/stockout_push/';
+                            break;
+
+                        case 'return_order_entry':
+                            console.log('准备跳转到退货单入库页面...');
+                            window.location.href = '/return_order_entry/';
+                            break;
+
+                        case 'transfer_out':
+                            console.log('准备跳转到调拨出库页面...');
+                            window.location.href = '/transfer_out/';
+                            break;
+
+                        case 'transfer_in':
+                            console.log('准备跳转到调拨入库页面...');
+                            window.location.href = '/transfer_in/';
+                            break;
+
+                        case 'inventory_adjust':
+                            console.log('准备跳转到库存调整页面...');
+                            window.location.href = '/inventory_adjust/';
+                            break;
+
+                        case 'reserve1':
+                        case 'reserve2':
+                            console.log('显示开发中提示...');
+                            alert('此功能正在开发中...');
+                            break;
+                            
+                        case 'home':
+                            console.log('切换到仪表盘...');
+                            // 移除所有活动状态
+                            document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+                            document.querySelectorAll('.nav-tabs .nav-link').forEach(t => t.classList.remove('active'));
+                            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('show', 'active'));
+                            
+                            // 添加当前活动状态
+                            this.classList.add('active');
+                            const homeTab = document.getElementById('home-tab');
+                            const homePane = document.getElementById('tab-home');
+                            if (homeTab) homeTab.classList.add('active');
+                            if (homePane) homePane.classList.add('show', 'active');
+                            break;
+                            
+                        default:
+                            console.log('未知页面类型:', pageKey);
+                            break;
+                    }
+                });
+            });
+
+            // 通知功能
+            const notificationInput = document.getElementById('notificationInput');
+            const notificationContent = document.getElementById('notificationContent');
+            const saveNotificationBtn = document.getElementById('saveNotification');
+
+            // 加载保存的通知
+            if (notificationContent) {
+                notificationContent.textContent = localStorage.getItem('notification') || '暂无通知';
+            }
+            if (notificationInput) {
+                notificationInput.value = localStorage.getItem('notification') || '';
+            }
+
+            // 保存通知事件
+            if (saveNotificationBtn) {
+                saveNotificationBtn.addEventListener('click', function() {
+                    const content = notificationInput.value.trim();
+                    if (content) {
+                        localStorage.setItem('notification', content);
+                        notificationContent.textContent = content;
+                        alert('通知保存成功！');
+                    } else {
+                        alert('请输入通知内容！');
+                    }
+                });
+            }
+            
+            // 备忘录功能
+            const memoContent = document.getElementById('memoContent');
+            const saveMemoBtn = document.getElementById('saveMemo');
+            
+            // 加载备忘录
+            fetch('/dashboard/get_memo')
+                .then(response => response.json())
+                .then(data => {
+                    if (memoContent) {
+                        memoContent.value = data.memo || '';
+                    }
+                });
+            
+            // 保存备忘录
+            if (saveMemoBtn) {
+                saveMemoBtn.addEventListener('click', function() {
+                    if (memoContent) {
+                        const memo = memoContent.value;
+                        fetch('/dashboard/save_memo', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ memo: memo })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('备忘录保存成功！');
+                            } else {
+                                alert('备忘录保存失败！');
+                            }
+                        });
+                    }
+                });
+            }
+            
+            // 加载RabbitMQ请求记录
+            function loadRabbitmqLogs() {
+                const port = window.location.port || '5000';
+                const url = `http://127.0.0.1:${port}/dashboard/get_rabbitmq_logs`;
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const logsTable = document.getElementById('rabbitmqLogsTable');
+                        if (logsTable) {
+                            logsTable.innerHTML = '';
+                            
+                            if (data.logs.length === 0) {
+                                logsTable.innerHTML = '<tr><td colspan="4" class="text-center">暂无记录</td></tr>';
+                                return;
+                            }
+                            
+                            data.logs.forEach(log => {
+                                const row = document.createElement('tr');
+                                const statusClass = log.success ? 'text-success' : 'text-danger';
+                                const statusText = log.success ? '成功' : '失败';
+                                
+                                row.innerHTML = `
+                                    <td>${new Date(log.timestamp).toLocaleString()}</td>
+                                    <td>${log.queue_name}</td>
+                                    <td class="${statusClass}">${statusText}</td>
+                                    <td><pre>${JSON.stringify(JSON.parse(log.message), null, 2)}</pre></td>
+                                `;
+                                logsTable.appendChild(row);
+                            });
+                        }
+                    });
+            }
+            
+            // 初始化加载RabbitMQ日志
+            loadRabbitmqLogs();
+            
+            // 每30秒刷新一次RabbitMQ日志
+            setInterval(loadRabbitmqLogs, 30000);
+            
+            // 加载菜单请求次数统计图表
+            function loadMenuStatsChart() {
+                fetch('/dashboard/get_menu_stats')
+                    .then(response => response.json())
+                    .then(data => {
+                        const ctx = document.getElementById('menuStatsChart');
+                        if (ctx) {
+                            const chartCtx = ctx.getContext('2d');
+                            
+                            const labels = Object.keys(data.stats);
+                            const values = Object.values(data.stats);
+                            
+                            // 菜单名称映射
+                            const menuNames = {
+                                'home': '仪表盘',
+                                'order_download': '订单下载',
+                                'order_delivery': '订单回传',
+                                'refund_order': '退款单生成',
+                                'exchange_order': '换货单生成',
+                                'return_order_notice': '通知单入库',
+                                'stockout_push': '出库单推送',
+                                'return_order_entry': '退货单入库',
+                                'transfer_out': '调拨出库',
+                                'transfer_in': '调拨入库',
+                                'inventory_adjust': '库存调整'
+                            };
+                            
+                            const formattedLabels = labels.map(label => menuNames[label] || label);
+                            
+                            new Chart(chartCtx, {
+                                type: 'bar',
+                                data: {
+                                    labels: formattedLabels,
+                                    datasets: [{
+                                        label: '请求次数',
+                                        data: values,
+                                        backgroundColor: [
+                                            'rgba(54, 162, 235, 0.5)',
+                                            'rgba(75, 192, 192, 0.5)',
+                                            'rgba(153, 102, 255, 0.5)',
+                                            'rgba(255, 99, 132, 0.5)',
+                                            'rgba(255, 159, 64, 0.5)',
+                                            'rgba(255, 205, 86, 0.5)',
+                                            'rgba(75, 192, 192, 0.5)',
+                                            'rgba(153, 102, 255, 0.5)',
+                                            'rgba(255, 99, 132, 0.5)',
+                                            'rgba(255, 159, 64, 0.5)',
+                                            'rgba(255, 205, 86, 0.5)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 99, 132, 1)',
+                                            'rgba(255, 159, 64, 1)',
+                                            'rgba(255, 205, 86, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 99, 132, 1)',
+                                            'rgba(255, 159, 64, 1)',
+                                            'rgba(255, 205, 86, 1)'
+                                        ],
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: {
+                                                precision: 0
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    });
+            }
+            
+            // 初始化菜单统计图表
+            loadMenuStatsChart();
+            
+            console.log('导航初始化完成');
+        });
+        
+        // 额外的调试信息
+        console.log('base.html JavaScript已加载');
+    </script>
+</body>
+</html>
