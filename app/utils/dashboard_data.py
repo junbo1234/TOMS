@@ -35,9 +35,7 @@ class DashboardDataManager:
         if len(self.rabbitmq_logs) > 1000:
             self.rabbitmq_logs.pop(0)
 
-    def get_rabbitmq_logs(self, limit: int = 50) -> List[Dict[str, Any]]:
-        """获取RabbitMQ请求记录"""
-        return self.rabbitmq_logs[-limit:]
+
 
     def save_memo(self, content: str):
         """保存备忘录内容"""

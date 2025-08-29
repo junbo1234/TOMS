@@ -19,6 +19,8 @@ class Config:
     STOCKOUT_PUSH_QUEUE = "purchase_return_plan_add_back"    # 队列名称：出库单推送
     RETURN_ORDER_ENTRY_QUEUE = 'sale_return_plan_add_back'  # 退货单入库队列
     EXCHANGE_ORDER_QUEUE = 'oms_exchange_order_download_queue'  # 换货单生成队列
+    ALLOCATION_OUT_QUEUE = 'stock_out_back'  # 调拨出库队列
+    ALLOCATION_ENTRY_QUEUE = 'entry_order_add_back_other'  # 调拨入库队列
 
     RABBITMQ_CONFIG = {
         'HOST': os.getenv('RABBITMQ_HOST'),
@@ -328,6 +330,68 @@ class Config:
         "receiver": "陈华 -6395",
         "storeId": ""
     }
+    
+    # 调拨出库预设参数
+    ALLOCATION_OUT_PRESET = {
+        "type": 2,
+        "callbackResponse": {
+            "apiMethodName": "stockout.confirm",
+            "deliveryOrder": {
+                "confirmType": 0,
+                "deliveryOrderCode": "",
+                "operateTime": "2021-03-17 16:57:15",
+                "orderConfirmTime": "2021-03-17 16:57:15",
+                "orderType": "DBCK",
+                "outBizCode": "",
+                "ownerCode": "XIER",
+                "status": "PARTDELIVERED",
+                "warehouseCode": ""
+            },
+            "orderLines": [
+                {
+                    "actualQty": "",
+                    "inventoryType": "ZP",
+                    "itemCode": "",
+                    "orderLineNo": "",
+                    "ownerCode": "XIER"
+                }
+            ],
+            "responseClass": "com.qimen.api.response.StockoutConfirmResponse",
+            "version": "2.0"
+        }
+    }
+    
+    # 调拨入库预设参数
+    ALLOCATION_ENTRY_PRESET = {
+        "callbackResponse": {
+            "apiMethodName": "entryorder.confirm",
+            "entryOrder": {
+                "confirmType": 0,
+                "entryOrderCode": "",
+                "entryOrderId": "",
+                "entryOrderType": "DBRK",
+                "operateTime": "",
+                "outBizCode": "",
+                "ownerCode": "XIER",
+                "remark": "",
+                "status": "PARTFULFILLED",
+                "warehouseCode": ""
+            },
+            "orderLines": [
+                {
+                    "actualQty": "",
+                    "inventoryType": "ZP",
+                    "itemCode": "",
+                    "orderLineNo": "",
+                    "ownerCode": "XIER"
+                }
+            ],
+            "responseClass": "com.qimen.api.response.EntryorderConfirmResponse",
+            "version": "2.0"
+        },
+        "type": 2
+    }
+
 
 # 创建配置实例
 config = Config()

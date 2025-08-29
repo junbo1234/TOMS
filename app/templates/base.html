@@ -110,6 +110,27 @@
                         </li>
                         <li class="nav-item has-submenu">
                             <a class="nav-link submenu-toggle" href="#">
+                                <i class="fas fa-exchange-alt me-2"></i>
+                                调拨计划
+                                <i class="fas fa-chevron-down ms-auto"></i>
+                            </a>
+                            <ul class="submenu">
+                                <li>
+                                    <a class="nav-link" href="/allocation_out/" data-page="allocation_out">
+                                        <i class="fas fa-truck-loading me-2"></i>
+                                        调拨出库
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="nav-link" href="/allocation_in/" data-page="allocation_in">
+                                        <i class="fas fa-warehouse me-2"></i>
+                                        调拨入库
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item has-submenu">
+                            <a class="nav-link submenu-toggle" href="#">
                                 <i class="fas fa-building me-2"></i>
                                 B2B管理
                                 <i class="fas fa-chevron-down ms-auto"></i>
@@ -129,27 +150,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li class="nav-item has-submenu">
-                            <a class="nav-link submenu-toggle" href="#">
-                                <i class="fas fa-truck me-2"></i>
-                                调拨管理
-                                <i class="fas fa-chevron-down ms-auto"></i>
-                            </a>
-                            <ul class="submenu">
-                                <li>
-                                    <a class="nav-link" href="/transfer_out/" data-page="transfer_out">
-                                        <i class="fas fa-sign-out-alt me-2"></i>
-                                        调拨出库
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="nav-link" href="/transfer_in/" data-page="transfer_in">
-                                        <i class="fas fa-sign-in-alt me-2"></i>
-                                        调拨入库
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
+
                         <li class="nav-item">
                             <a class="nav-link" href="/inventory_adjust/" data-page="inventory_adjust">
                                 <i class="fas fa-cubes me-2"></i>
@@ -537,14 +538,14 @@
                             window.location.href = '/return_order_entry/';
                             break;
 
-                        case 'transfer_out':
+                        case 'allocation_out':
                             console.log('准备跳转到调拨出库页面...');
-                            window.location.href = '/transfer_out/';
+                            window.location.href = '/allocation_out/';
                             break;
 
-                        case 'transfer_in':
+                        case 'allocation_in':
                             console.log('准备跳转到调拨入库页面...');
-                            window.location.href = '/transfer_in/';
+                            window.location.href = '/allocation_in/';
                             break;
 
                         case 'inventory_adjust':
@@ -643,45 +644,7 @@
                     }
                 });
             }
-            
-            // 加载RabbitMQ请求记录
-            function loadRabbitmqLogs() {
-                const port = window.location.port || '5000';
-                const url = `http://127.0.0.1:${port}/dashboard/get_rabbitmq_logs`;
-                fetch(url)
-                    .then(response => response.json())
-                    .then(data => {
-                        const logsTable = document.getElementById('rabbitmqLogsTable');
-                        if (logsTable) {
-                            logsTable.innerHTML = '';
-                            
-                            if (data.logs.length === 0) {
-                                logsTable.innerHTML = '<tr><td colspan="4" class="text-center">暂无记录</td></tr>';
-                                return;
-                            }
-                            
-                            data.logs.forEach(log => {
-                                const row = document.createElement('tr');
-                                const statusClass = log.success ? 'text-success' : 'text-danger';
-                                const statusText = log.success ? '成功' : '失败';
-                                
-                                row.innerHTML = `
-                                    <td>${new Date(log.timestamp).toLocaleString()}</td>
-                                    <td>${log.queue_name}</td>
-                                    <td class="${statusClass}">${statusText}</td>
-                                    <td><pre>${JSON.stringify(JSON.parse(log.message), null, 2)}</pre></td>
-                                `;
-                                logsTable.appendChild(row);
-                            });
-                        }
-                    });
-            }
-            
-            // 初始化加载RabbitMQ日志
-            loadRabbitmqLogs();
-            
-            // 每30秒刷新一次RabbitMQ日志
-            setInterval(loadRabbitmqLogs, 30000);
+
             
             // 加载菜单请求次数统计图表
             function loadMenuStatsChart() {
@@ -705,8 +668,8 @@
                                 'return_order_notice': '通知单入库',
                                 'stockout_push': '出库单推送',
                                 'return_order_entry': '退货单入库',
-                                'transfer_out': '调拨出库',
-                                'transfer_in': '调拨入库',
+                                'allocation_out': '调拨出库',
+                                'allocation_in': '调拨入库',
                                 'inventory_adjust': '库存调整'
                             };
                             

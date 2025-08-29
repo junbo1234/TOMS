@@ -1,7 +1,5 @@
 # 测试数据生成平台
 
-# 测试数据生成平台
-
 一个基于Flask的测试数据生成平台，支持多种订单类型的创建和消息推送，通过RabbitMQ进行消息队列处理，适用于OMS系统的测试数据生成。
 
 ## 项目结构
@@ -73,7 +71,19 @@
 - 实时JSON预览与校验
 - 消息推送到RabbitMQ队列 `oms_exchange_order_download_queue`
 
-### 8. RabbitMQ集成
+### 8. 调拨入库功能
+- 调拨入库信息管理
+- 支持多商品明细配置
+- 实时JSON预览
+- 消息推送到RabbitMQ队列
+
+### 9. 调拨出库功能
+- 调拨出库信息管理
+- 支持多商品明细配置
+- 实时JSON预览
+- 消息推送到RabbitMQ队列
+
+### 10. RabbitMQ集成
 - 连接池管理
 - 自动重试机制
 - 消息持久化
@@ -210,6 +220,22 @@ app.run(
 
 **数据提交：**
 - POST `/exchange_order/submit` - 提交换货单数据
+
+### 9. 调拨入库接口
+
+**页面访问：**
+- GET `/allocation_in/` - 调拨入库页面
+
+**数据提交：**
+- POST `/allocation_in/submit` - 提交调拨入库数据
+
+### 10. 调拨出库接口
+
+**页面访问：**
+- GET `/allocation_out/` - 调拨出库页面
+
+**数据提交：**
+- POST `/allocation_out/submit` - 提交调拨出库数据
 
 ## 更新日志
 

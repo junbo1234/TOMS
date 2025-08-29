@@ -220,7 +220,16 @@ class RabbitMQManager:
 
                 # 确保队列存在
                 logger.info(f"确保队列 {queue_name} 存在...")
-                self.ensure_queue_exists(queue_name)
+                try:
+                    self.ensure_queue_exists(queue_name)
+                except Exception as e:
+                    logger.error(f"确保队列存在失败: {str(e)}")
+                    if retry_count < self.config.get('MAX_RETRIES', 3):
+                        logger.info(f"尝试重新连接并重试 (第{retry_count + 1}次)...")
+                        self.connection = None  # 强制重新连接
+                        time.sleep(self.config.get('RETRY_DELAY', 2))
+                        return self.publish_message(queue_name, message, retry_count + 1)
+                    return False
 
                 try:
                     # 启用发布确认
@@ -364,32 +373,9 @@ def push_message(queue_name: str, message: Dict[str, Any]) -> bool:
         elapsed_time = time.time() - start_time
         logger.info(f"消息推送耗时: {elapsed_time:.2f}秒，结果: {'成功' if success else '失败'}")
 
-        # 记录RabbitMQ请求
-        from app.utils.dashboard_data import get_dashboard_data_manager
-        dashboard_manager = get_dashboard_data_manager()
-        # 创建一个可JSON序列化的消息副本
-        serializable_message = json.loads(json.dumps(message, ensure_ascii=False))
-        dashboard_manager.log_rabbitmq_request(queue_name, serializable_message, success)
-
         return success
     except Exception as e:
         logger.error(f"推送消息失败: {str(e)}")
-        # 记录失败的请求
-        from app.utils.dashboard_data import get_dashboard_data_manager
-        dashboard_manager = get_dashboard_data_manager()
-        try:
-            # 尝试创建可JSON序列化的消息副本
-            serializable_message = json.loads(json.dumps(message, ensure_ascii=False))
-            dashboard_manager.log_rabbitmq_request(queue_name, serializable_message, False)
-        except Exception as json_error:
-            logger.error(f"创建可序列化消息副本失败: {str(json_error)}")
-            # 如果序列化失败，使用一个简化的消息对象
-            simplified_message = {
-                'queue_name': queue_name,
-                'error': str(e),
-                'serialization_error': str(json_error)
-            }
-            dashboard_manager.log_rabbitmq_request(queue_name, simplified_message, False)
         return False
 
 
