@@ -44,9 +44,3 @@ def save_memo():
 def get_memo():
     memo = dashboard_manager.get_memo()
     return jsonify({'memo': memo})
-
-
-@dashboard_bp.route('/get_rabbitmq_logs')
-def get_rabbitmq_logs():
-    logs = dashboard_manager.get_rabbitmq_logs()
-    return jsonify({'logs': logs})
