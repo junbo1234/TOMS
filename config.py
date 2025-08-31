@@ -21,6 +21,7 @@ class Config:
     EXCHANGE_ORDER_QUEUE = 'oms_exchange_order_download_queue'  # 换货单生成队列
     ALLOCATION_OUT_QUEUE = 'stock_out_back'  # 调拨出库队列
     ALLOCATION_ENTRY_QUEUE = 'entry_order_add_back_other'  # 调拨入库队列
+    INVENTORY_ENTRY_QUEUE = 'inventory_return_order_back'  # 其他入库队列
 
     RABBITMQ_CONFIG = {
         'HOST': os.getenv('RABBITMQ_HOST'),
@@ -389,6 +390,68 @@ class Config:
             "responseClass": "com.qimen.api.response.EntryorderConfirmResponse",
             "version": "2.0"
         },
+        "type": 2
+    }
+
+    # 其他出库预设参数
+    INVENTORY_OUT_PRESET = {
+        "type": 2,
+        "callbackResponse": {
+            "apiMethodName": "stockout.confirm",
+            "deliveryOrder": {
+                "confirmType": 0,
+                "deliveryOrderCode": "GSO20250808126164",
+                "operateTime": "2021-03-17 16:57:15",
+                "orderConfirmTime": "2021-03-17 16:57:15",
+                "orderType": "DBCK",
+                "outBizCode": "GSO20250808126164",
+                "ownerCode": "XIER",
+                "status": "PARTDELIVERED",
+                "warehouseCode": "DCN"
+            },
+            "orderLines": [
+                {
+                    "actualQty": "100",
+                    "inventoryType": "ZP",
+                    "itemCode": "6937334127735",
+                    "orderLineNo": "1",
+                    "ownerCode": "XIER"
+                }
+            ],
+            "responseClass": "com.qimen.api.response.StockoutConfirmResponse",
+            "version": "2.0"
+        }
+    }
+
+    # 其他入库预设参数
+    INVENTORY_ENTRY_PRESET = {
+        "callbackResponse": {
+            "apiMethodName": "taobao.qimen.entryorder.confirm",
+            "entryOrder": {
+                "confirmType": 0,
+                "entryOrderCode": "GSI20250808044945",
+                "entryOrderId": "GSI20250808044945",
+                "entryOrderType": "CGRK",
+                "operateTime": "2025-08-08 10:58:44",
+                "outBizCode": "GSI20250808044945",
+                "ownerCode": "xier",
+                "remark": "",
+                "status": "PARTFULFILLED",
+                "warehouseCode": "DCN"
+            },
+            "orderLines": [
+                {
+                    "actualQty": 2000,
+                    "inventoryType": "ZP",
+                    "itemCode": "6937334127735",
+                    "orderLineNo": "",
+                    "ownerCode": "xier"
+                }
+            ],
+            "responseClass": "com.qimen.api.response.EntryorderConfirmResponse",
+            "version": "2.0"
+        },
+        "entryOrderCode": "GSI20250808044945",
         "type": 2
     }
 

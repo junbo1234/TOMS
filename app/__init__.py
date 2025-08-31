@@ -3,7 +3,7 @@
 # app/__init__.py
 from flask import Flask, redirect, url_for
 from config import config
-from app.routes import order_download, order_delivery, dashboard, refund_order, return_order_notice, stockout_push, return_order_entry, exchange_order, allocation_out, allocation_in  # 导入蓝图
+from app.routes import order_download, order_delivery, dashboard, refund_order, return_order_notice, stockout_push, return_order_entry, exchange_order, allocation_out, allocation_in, inventory_entry, inventory_out  # 导入蓝图
 import atexit
 
 
@@ -34,6 +34,10 @@ def create_app() -> Flask:
     app.register_blueprint(allocation_out.allocation_out_bp)
     # 注册蓝图（调拨入库：URL前缀/allocation_in）
     app.register_blueprint(allocation_in.allocation_in_bp)
+    # 注册蓝图（其他入库：URL前缀/inventory_entry）
+    app.register_blueprint(inventory_entry.inventory_entry_bp)
+    # 注册蓝图（其他出库：URL前缀/out）
+    app.register_blueprint(inventory_out.inventory_out_bp)
 
     # 根路径路由 - 重定向到仪表盘
     @app.route('/')
