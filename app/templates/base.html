@@ -178,18 +178,7 @@
                                 库存调整
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-page="reserve1">
-                                <i class="fas fa-chart-line me-2"></i>
-                                数据分析
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-page="reserve2">
-                                <i class="fas fa-cogs me-2"></i>
-                                系统配置
-                            </a>
-                        </li>
+
                     </ul>
                     
                     <hr class="my-4">
@@ -220,19 +209,6 @@
                 <!-- 默认仪表盘内容 -->
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2 fw-bold text-dark">仪表盘</h1>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-download me-1"></i>导出
-                            </button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-print me-1"></i>打印
-                            </button>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-                            <i class="fas fa-calendar me-1"></i>本周
-                        </button>
-                    </div>
                 </div>
 
                 <!-- Tab Navigation -->
@@ -275,38 +251,7 @@
                             </div>
                         </div>
 
-                        <!-- RabbitMQ请求记录 -->
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-white border-0">
-                                        <h5 class="card-title mb-0">
-                                            <i class="fas fa-exchange-alt me-2 text-primary"></i>RabbitMQ请求记录
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>时间</th>
-                                                        <th>队列名称</th>
-                                                        <th>状态</th>
-                                                        <th>请求报文</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="rabbitmqLogsTable">
-                                                    <!-- 数据将通过JavaScript动态加载 -->
-                                                    <tr>
-                                                        <td colspan="4" class="text-center">加载中...</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <!-- 菜单请求次数统计 -->
                         <div class="row mt-4">
@@ -326,46 +271,7 @@
                             </div>
                         </div>
 
-                        <!-- Recent Activity -->
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <div class="card border-0 shadow-sm">
-                                    <div class="card-header bg-white border-0">
-                                        <h5 class="card-title mb-0">
-                                            <i class="fas fa-history me-2 text-primary"></i>最近活动
-                                        </h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="timeline">
-                                            <div class="timeline-item">
-                                                <div class="timeline-marker bg-success"></div>
-                                                <div class="timeline-content">
-                                                    <h6 class="mb-1">订单下载成功</h6>
-                                                    <p class="text-muted mb-0">订单号: PO202410010001 已成功推送到队列</p>
-                                                    <small class="text-muted">2分钟前</small>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-item">
-                                                <div class="timeline-marker bg-primary"></div>
-                                                <div class="timeline-content">
-                                                    <h6 class="mb-1">销售订单回传</h6>
-                                                    <p class="text-muted mb-0">回传数据已成功处理</p>
-                                                    <small class="text-muted">5分钟前</small>
-                                                </div>
-                                            </div>
-                                            <div class="timeline-item">
-                                                <div class="timeline-marker bg-warning"></div>
-                                                <div class="timeline-content">
-                                                    <h6 class="mb-1">系统维护</h6>
-                                                    <p class="text-muted mb-0">RabbitMQ连接已重新建立</p>
-                                                    <small class="text-muted">10分钟前</small>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
                 {% endblock %}
@@ -515,7 +421,7 @@
                                 const menuNames = {
                                     'home': '仪表盘',
                                     'order_download': '订单下载',
-                                    'order_delivery': '订单回传',
+                                    'order_delivery': '订单发货',
                                     'refund_order': '退款单生成',
                                     'exchange_order': '换货单生成',
                                     'return_order_notice': '通知单入库',
@@ -524,7 +430,8 @@
                                     'allocation_out': '调拨出库',
                                     'allocation_in': '调拨入库',
                                     'inventory_adjust': '库存调整',
-                                    'inventory_out': '其他出库'
+                                    'inventory_out': '其他出库',
+                                    'inventory_entry': '其他入库'
                                 };
                                 
                                 const formattedLabels = labels.map(label => menuNames[label] || label);
