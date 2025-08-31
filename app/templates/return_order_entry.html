@@ -93,13 +93,16 @@
             <div class="card-body text-center">
                 <div class="btn-group" role="group">
                     <button type="submit" class="btn btn-primary btn-lg px-5">
-                        <i class="fas fa-paper-plane me-2"></i>生成并推送数据
+                        <i class="fas fa-paper-plane me-2"></i>推送MQ
                     </button>
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="preview-btn">
                         <i class="fas fa-eye me-2"></i>预览数据
                     </button>
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
                         <i class="fas fa-undo me-2"></i>重置表单
+                    </button>
+                    <button type="button" class="btn btn-outline-info btn-lg" id="mq-btn" onclick="window.open('http://192.168.5.221:15672/#/queues/oms_test/sale_return_plan_add_back', '_blank')">
+                        <i class="fas fa-project-diagram me-2"></i>直达MQ
                     </button>
                 </div>
             </div>

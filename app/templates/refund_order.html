@@ -193,9 +193,6 @@
                                    {"label":"子订单号","idPrefix":"platformNo","namePrefix":"platformNo","placeholder":"请输入子订单号","required":true,"icon":"fas fa-tag"},
                                    {"label":"申请数量","idPrefix":"applyNum","namePrefix":"applyNum","placeholder":"请输入申请数量","required":true,"type":"number","min":1,"icon":"fas fa-sort-numeric-up"}
                                ]'>
-                        <button type="button" class="btn btn-outline-secondary" id="generate-details">
-                            <i class="fas fa-magic me-1"></i>生成
-                        </button>
                     </div>
                 </div>
             </div>
@@ -216,6 +213,9 @@
                     </button>
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
                         <i class="fas fa-undo me-2"></i>重置表单
+                    </button>
+                    <button type="button" class="btn btn-outline-info btn-lg" id="mq-btn" onclick="window.open('http://192.168.5.221:15672/#/queues/oms_test/oms_return_order_download_queue', '_blank')">
+                        <i class="fas fa-project-diagram me-2"></i>直达MQ
                     </button>
                 </div>
             </div>
@@ -285,7 +285,7 @@
 
 <!-- 退款单生成页面JavaScript -->
 <script>
-    window.preset = {{ preset|tojson|safe }};
+    window.preset = JSON.parse('{{ preset|tojson|safe if preset is defined else "{}" }}');
 </script>
 <script src="{{ url_for('static', filename='js/refund_order.js') }}"></script>
 {% endblock %}

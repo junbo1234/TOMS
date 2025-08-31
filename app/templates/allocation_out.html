@@ -79,9 +79,6 @@
                                    {"label":"商品SKU码","idPrefix":"itemCode","namePrefix":"itemCode","placeholder":"请输入商品SKU码","required":true,"icon":"fas fa-barcode"},
                                    {"label":"实际数量","idPrefix":"actualQty","namePrefix":"actualQty","placeholder":"请输入实际数量","required":true,"type":"number","min":1,"icon":"fas fa-sort-numeric-up"}
                                ]'>
-                        <button type="button" class="btn btn-outline-secondary" id="generate-details">
-                            <i class="fas fa-magic me-1"></i>生成
-                        </button>
                     </div>
                 </div>
             </div>
@@ -95,13 +92,16 @@
             <div class="card-body text-center">
                 <div class="btn-group" role="group">
                     <button type="submit" class="btn btn-primary btn-lg px-5">
-                        <i class="fas fa-paper-plane me-2"></i>提交调拨数据
+                        <i class="fas fa-paper-plane me-2"></i>推送MQ
                     </button>
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="preview-btn">
                         <i class="fas fa-eye me-2"></i>预览JSON
                     </button>
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
-                        <i class="fas fa-undo me-2"></i>重置
+                        <i class="fas fa-undo me-2"></i>重置表单
+                    </button>
+                    <button type="button" class="btn btn-outline-info btn-lg" id="mq-btn" onclick="window.open('http://192.168.5.221:15672/#/queues/oms_test/stock_out_back', '_blank')">
+                        <i class="fas fa-project-diagram me-2"></i>直达MQ
                     </button>
                 </div>
             </div>
@@ -171,7 +171,7 @@
 
 <!-- 调拨出库页面JavaScript -->
 <script>
-    window.preset = {{ preset|tojson|safe if preset is defined else '{}' }};
+    window.preset = JSON.parse('{{ preset|tojson|safe if preset is defined else "{}" }}');
 </script>
 <script src="{{ url_for('static', filename='js/allocation_out.js') }}"></script>
 {% endblock %}

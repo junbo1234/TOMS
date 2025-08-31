@@ -109,13 +109,16 @@
             <div class="card-body text-center">
                 <div class="btn-group" role="group">
                     <button type="submit" id="submitBtn" class="btn btn-primary btn-lg px-5">
-                        <i class="fas fa-paper-plane me-2"></i>生成并推送调拨入库数据
+                        <i class="fas fa-paper-plane me-2"></i>推送MQ
                     </button>
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="preview-btn">
                         <i class="fas fa-eye me-2"></i>预览数据
                     </button>
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
                         <i class="fas fa-undo me-2"></i>重置表单
+                    </button>
+                    <button type="button" class="btn btn-outline-info btn-lg" id="mq-btn" onclick="window.open('http://192.168.5.221:15672/#/queues/oms_test/entry_order_add_back_other', '_blank')">
+                        <i class="fas fa-project-diagram me-2"></i>直达MQ
                     </button>
                 </div>
             </div>
@@ -185,7 +188,7 @@
 
 <!-- 调拨入库页面JavaScript -->
 <script>
-    window.preset = {{ (preset if preset is defined else {})|tojson|safe }};
+    window.preset = JSON.parse('{{ (preset if preset is defined else {})|tojson|safe }}');
 </script>
 <script src="{{ url_for('static', filename='js/allocation_in.js') }}"></script>
 {% endblock %}
