@@ -236,17 +236,29 @@
                                         </h5>
                                     </div>
                                     <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <textarea class="form-control" id="memoContent" rows="5" placeholder="请输入备忘录内容"></textarea>
-                                                <div class="text-end mt-2">
-                                                    <button class="btn btn-primary" type="button" id="saveMemo">
-                                                        <i class="fas fa-save me-1"></i>保存备忘录
-                                                    </button>
-                                                </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <!-- 备忘录输入区域 -->
+                                            <textarea class="form-control" id="memoContent" rows="3" placeholder="请输入备忘录内容"></textarea>
+                                            <div class="text-end mt-2">
+                                                <button class="btn btn-primary" type="button" id="saveMemo">
+                                                    <i class="fas fa-save me-1"></i>保存备忘录
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <!-- 备忘录历史记录区域 -->
+                                    <div class="mt-4">
+                                        <h6 class="text-muted font-weight-medium mb-2">历史记录</h6>
+                                        <div id="memoHistory" class="memo-history-list">
+                                            <!-- 历史记录将通过JavaScript动态添加 -->
+                                            <div class="text-center text-muted py-3">
+                                                暂无历史记录
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -377,29 +389,113 @@
             setTimeout(() => {
                 const memoContent = document.getElementById('memoContent');
                 const saveMemoBtn = document.getElementById('saveMemo');
+                const memoHistory = document.getElementById('memoHistory');
                 
-                // 加载备忘录
-                if (memoContent) {
-                    fetch('/dashboard/get_memo')
+                // 加载备忘录历史记录
+                function loadMemoHistory() {
+                    if (memoHistory) {
+                        fetch('/dashboard/get_memo_history')
+                            .then(response => response.json())
+                            .then(data => {
+                                renderMemoHistory(data.history);
+                            });
+                    }
+                }
+                
+                // 渲染备忘录历史记录
+                function renderMemoHistory(history) {
+                    if (memoHistory) {
+                        if (history && history.length > 0) {
+                            memoHistory.innerHTML = '';
+                            // 倒序渲染，最新的记录在最上面
+                            history.reverse().forEach(entry => {
+                                const memoItem = document.createElement('div');
+                                memoItem.className = 'memo-item p-3 border border-light rounded bg-white shadow-sm mb-2 d-flex justify-content-between align-items-start';
+                                memoItem.innerHTML = `
+                                    <div class="flex-grow-1">
+                                        <p class="mb-1 text-sm">${entry.content}</p>
+                                        <span class="text-xs text-muted">${entry.timestamp}</span>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm ml-2 delete-memo-btn" data-id="${entry.id}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                `;
+                                memoHistory.appendChild(memoItem);
+                            });
+                            
+                            // 绑定删除按钮事件
+                            document.querySelectorAll('.delete-memo-btn').forEach(btn => {
+                                btn.addEventListener('click', function() {
+                                    const memoId = parseInt(this.getAttribute('data-id'));
+                                    deleteMemo(memoId);
+                                });
+                            });
+                        } else {
+                            memoHistory.innerHTML = `
+                                <div class="text-center text-muted py-3">
+                                    暂无历史记录
+                                </div>
+                            `;
+                        }
+                    }
+                }
+                
+                // 删除备忘录
+                function deleteMemo(memoId) {
+                    if (confirm('确定要删除这条备忘录吗？')) {
+                        fetch('/dashboard/delete_memo', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ id: memoId })
+                        })
                         .then(response => response.json())
                         .then(data => {
-                            memoContent.value = data.memo || '';
+                            if (data.success) {
+                                loadMemoHistory(); // 重新加载历史记录
+                            }
                         });
+                    }
                 }
                 
                 // 保存备忘录
                 if (saveMemoBtn && memoContent) {
                     saveMemoBtn.addEventListener('click', function() {
                         const memo = memoContent.value;
-                        fetch('/dashboard/save_memo', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ memo: memo })
-                        }).catch(() => {});
+                        if (memo.trim()) {
+                            fetch('/dashboard/save_memo', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ memo: memo })
+                            })
+                            .then(() => {
+                                // 清空输入框
+                                memoContent.value = '';
+                                // 重新加载历史记录
+                                loadMemoHistory();
+                                // 显示保存成功的提示
+                                const toast = document.createElement('div');
+                                toast.className = 'position-fixed top-20 right-3 z-50 bg-success text-white px-4 py-2 rounded shadow-lg fade-in';
+                                toast.textContent = '备忘录已保存';
+                                document.body.appendChild(toast);
+                                setTimeout(() => {
+                                    toast.remove();
+                                }, 3000);
+                            })
+                            .catch(() => {
+                                alert('保存失败，请重试');
+                            });
+                        } else {
+                            alert('请输入备忘录内容');
+                        }
                     });
                 }
+                
+                // 初始加载历史记录
+                loadMemoHistory();
             }, 1000);
 
             

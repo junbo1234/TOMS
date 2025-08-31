@@ -44,3 +44,19 @@ def save_memo():
 def get_memo():
     memo = dashboard_manager.get_memo()
     return jsonify({'memo': memo})
+
+
+@dashboard_bp.route('/get_memo_history')
+def get_memo_history():
+    history = dashboard_manager.get_memo_history()
+    return jsonify({'history': history})
+
+
+@dashboard_bp.route('/delete_memo', methods=['POST'])
+def delete_memo():
+    data = request.json
+    memo_id = data.get('id')
+    if memo_id is not None:
+        success = dashboard_manager.delete_memo(int(memo_id))
+        return jsonify({'success': success})
+    return jsonify({'success': False}), 400

@@ -17,7 +17,7 @@ class DashboardDataManager:
             cls._instance = super(DashboardDataManager, cls).__new__(cls)
             # 初始化数据存储
             cls._instance.rabbitmq_logs = []  # RabbitMQ请求记录
-            cls._instance.memo_content = ""  # 备忘录内容
+            cls._instance.memo_history = []  # 备忘录历史记录
             cls._instance.menu_stats = {}  # 菜单请求次数统计
         return cls._instance
 
@@ -39,11 +39,34 @@ class DashboardDataManager:
 
     def save_memo(self, content: str):
         """保存备忘录内容"""
-        self.memo_content = content
+        if content.strip():
+            memo_entry = {
+                'id': len(self.memo_history),
+                'content': content.strip(),
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            }
+            self.memo_history.append(memo_entry)
+            # 限制历史记录数量，保持最新的20条
+            if len(self.memo_history) > 20:
+                self.memo_history.pop(0)
 
     def get_memo(self) -> str:
-        """获取备忘录内容"""
-        return self.memo_content
+        """获取最新的备忘录内容（为兼容旧接口）"""
+        if self.memo_history:
+            return self.memo_history[-1]['content']
+        return ""
+
+    def get_memo_history(self) -> List[Dict[str, Any]]:
+        """获取备忘录历史记录"""
+        return self.memo_history
+
+    def delete_memo(self, memo_id: int) -> bool:
+        """删除指定ID的备忘录"""
+        for i, entry in enumerate(self.memo_history):
+            if entry['id'] == memo_id:
+                self.memo_history.pop(i)
+                return True
+        return False
 
     def increment_menu_count(self, menu_name: str):
         """增加菜单请求次数"""
