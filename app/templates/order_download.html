@@ -217,7 +217,7 @@
 
 <!-- 订单下载页面JavaScript -->
 <script>
-    window.preset = {{ preset|tojson|safe }};
+    window.preset = {{ preset|tojson|safe if preset is defined else '{}' }};
 </script>
 <script src="{{ url_for('static', filename='js/order_download.js') }}"></script>
 {% endblock %}
