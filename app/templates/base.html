@@ -466,9 +466,7 @@
     <script>
         // 确保在DOM加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM加载完成，开始初始化导航...');
-            
-            // 展开式菜单逻辑
+            // 展开式菜单逻辑 - 确保每次加载都能展开二级菜单
             const submenuToggles = document.querySelectorAll('.submenu-toggle');
             submenuToggles.forEach(toggle => {
                 toggle.addEventListener('click', function(e) {
@@ -483,131 +481,38 @@
                 });
             });
 
-            // 初始展开B2C订单菜单
-            const firstSubmenuToggle = document.querySelector('.submenu-toggle');
-            if (firstSubmenuToggle) {
-                const submenu = firstSubmenuToggle.nextElementSibling;
-                const icon = firstSubmenuToggle.querySelector('.fa-chevron-down');
-                submenu.classList.add('show');
-                icon.style.transform = 'rotate(180deg)';
+            // 检查是否需要初始化导航
+            const navInitialized = localStorage.getItem('navInitialized') === 'true';
+            
+            if (!navInitialized) {
+                console.log('首次加载，初始化导航...');
+
+                // 初始展开B2C订单菜单
+                const firstSubmenuToggle = document.querySelector('.submenu-toggle');
+                if (firstSubmenuToggle) {
+                    const submenu = firstSubmenuToggle.nextElementSibling;
+                    const icon = firstSubmenuToggle.querySelector('.fa-chevron-down');
+                    submenu.classList.add('show');
+                    icon.style.transform = 'rotate(180deg)';
+                }
+
+                // 标记导航已初始化
+                localStorage.setItem('navInitialized', 'true');
             }
 
-            // 导航链接点击事件已在原有代码中处理
-            // 获取所有侧边栏导航链接
-            const navLinks = document.querySelectorAll('.sidebar .nav-link');
-            console.log('找到导航链接数量:', navLinks.length);
-            
-            // 为每个导航链接添加点击事件
-            navLinks.forEach(function(link, index) {
-                console.log(`初始化导航链接 ${index + 1}:`, link.getAttribute('data-page'));
-                
+            // 导航链接点击事件
+            document.querySelectorAll('.sidebar .nav-link').forEach(link => {
                 link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
                     const pageKey = this.getAttribute('data-page');
-                    console.log('点击了导航链接:', pageKey);
-                    
-                    // 记录菜单请求次数
+                    if (pageKey) {
+                        // 记录菜单请求次数（静默失败）
                         fetch('/dashboard/increment_menu_count', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({ menu_id: pageKey })
-                        });
-                        
-                        // 根据页面类型执行不同的操作
-                        switch(pageKey) {
-                            case 'home':
-                                console.log('准备跳转到仪表盘页面...');
-                                window.location.href = '/dashboard/';
-                                break;
-
-                        case 'order_download':
-                            console.log('准备跳转到订单下载页面...');
-                            window.location.href = '/order_download/';
-                            break;
-
-                        case 'order_delivery':
-                            console.log('准备跳转到订单回传页面...');
-                            window.location.href = '/order_delivery/';
-                            break;
-
-                        case 'refund_order':
-                            console.log('准备跳转到退款单生成页面...');
-                            window.location.href = '/refund_order/';
-                            break;
-
-                        case 'exchange_order':
-                            console.log('准备跳转到换货单生成页面...');
-                            window.location.href = '/exchange_order/';
-                            break;
-
-                        case 'return_order_notice':
-                            console.log('准备跳转到通知单入库页面...');
-                            window.location.href = '/return_order_notice/';
-                            break;
-
-                        case 'stockout_push':
-                            console.log('准备跳转到出库单推送页面...');
-                            window.location.href = '/stockout_push/';
-                            break;
-
-                        case 'inventory_entry':
-                            console.log('准备跳转到其他入库页面...');
-                            window.location.href = '/inventory_entry/';
-                            break;
-
-                        case 'return_order_entry':
-                            console.log('准备跳转到退货单入库页面...');
-                            window.location.href = '/return_order_entry/';
-                            break;
-
-                        case 'allocation_out':
-                            console.log('准备跳转到调拨出库页面...');
-                            window.location.href = '/allocation_out/';
-                            break;
-
-                        case 'allocation_in':
-                            console.log('准备跳转到调拨入库页面...');
-                            window.location.href = '/allocation_in/';
-                            break;
-
-                        case 'inventory_adjust':
-                            console.log('准备跳转到库存调整页面...');
-                            window.location.href = '/inventory_adjust/';
-                            break;
-
-                        case 'inventory_out':
-                            console.log('准备跳转到其他出库页面...');
-                            window.location.href = '/inventory_out/';
-                            break;
-
-                        case 'reserve1':
-                        case 'reserve2':
-                            console.log('显示开发中提示...');
-                            alert('此功能正在开发中...');
-                            break;
-                            
-                        case 'home':
-                            console.log('切换到仪表盘...');
-                            // 移除所有活动状态
-                            document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
-                            document.querySelectorAll('.nav-tabs .nav-link').forEach(t => t.classList.remove('active'));
-                            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('show', 'active'));
-                            
-                            // 添加当前活动状态
-                            this.classList.add('active');
-                            const homeTab = document.getElementById('home-tab');
-                            const homePane = document.getElementById('tab-home');
-                            if (homeTab) homeTab.classList.add('active');
-                            if (homePane) homePane.classList.add('show', 'active');
-                            break;
-                            
-                        default:
-                            console.log('未知页面类型:', pageKey);
-                            break;
+                        }).catch(() => {});
                     }
                 });
             });
@@ -639,23 +544,23 @@
                 });
             }
             
-            // 备忘录功能
-            const memoContent = document.getElementById('memoContent');
-            const saveMemoBtn = document.getElementById('saveMemo');
-            
-            // 加载备忘录
-            fetch('/dashboard/get_memo')
-                .then(response => response.json())
-                .then(data => {
-                    if (memoContent) {
-                        memoContent.value = data.memo || '';
-                    }
-                });
-            
-            // 保存备忘录
-            if (saveMemoBtn) {
-                saveMemoBtn.addEventListener('click', function() {
-                    if (memoContent) {
+            // 延迟加载备忘录（非关键资源）
+            setTimeout(() => {
+                const memoContent = document.getElementById('memoContent');
+                const saveMemoBtn = document.getElementById('saveMemo');
+                
+                // 加载备忘录
+                if (memoContent) {
+                    fetch('/dashboard/get_memo')
+                        .then(response => response.json())
+                        .then(data => {
+                            memoContent.value = data.memo || '';
+                        });
+                }
+                
+                // 保存备忘录
+                if (saveMemoBtn && memoContent) {
+                    saveMemoBtn.addEventListener('click', function() {
                         const memo = memoContent.value;
                         fetch('/dashboard/save_memo', {
                             method: 'POST',
@@ -663,101 +568,99 @@
                                 'Content-Type': 'application/json'
                             },
                             body: JSON.stringify({ memo: memo })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert('备忘录保存成功！');
-                            } else {
-                                alert('备忘录保存失败！');
-                            }
-                        });
-                    }
-                });
-            }
+                        }).catch(() => {});
+                    });
+                }
+            }, 1000);
 
             
-            // 加载菜单请求次数统计图表
+            // 条件加载菜单请求次数统计图表 - 只在dashboard页面加载
             function loadMenuStatsChart() {
-                fetch('/dashboard/get_menu_stats')
-                    .then(response => response.json())
-                    .then(data => {
-                        const ctx = document.getElementById('menuStatsChart');
-                        if (ctx) {
-                            const chartCtx = ctx.getContext('2d');
-                            
-                            const labels = Object.keys(data.stats);
-                            const values = Object.values(data.stats);
-                            
-                            // 菜单名称映射
-                            const menuNames = {
-                                'home': '仪表盘',
-                                'order_download': '订单下载',
-                                'order_delivery': '订单回传',
-                                'refund_order': '退款单生成',
-                                'exchange_order': '换货单生成',
-                                'return_order_notice': '通知单入库',
-                                'stockout_push': '出库单推送',
-                                'return_order_entry': '退货单入库',
-                                'allocation_out': '调拨出库',
-                                'allocation_in': '调拨入库',
-                                'inventory_adjust': '库存调整',
-                                'inventory_out': '其他出库'
-                            };
-                            
-                            const formattedLabels = labels.map(label => menuNames[label] || label);
-                            
-                            new Chart(chartCtx, {
-                                type: 'bar',
-                                data: {
-                                    labels: formattedLabels,
-                                    datasets: [{
-                                        label: '请求次数',
-                                        data: values,
-                                        backgroundColor: [
-                                            'rgba(54, 162, 235, 0.5)',
-                                            'rgba(75, 192, 192, 0.5)',
-                                            'rgba(153, 102, 255, 0.5)',
-                                            'rgba(255, 99, 132, 0.5)',
-                                            'rgba(255, 159, 64, 0.5)',
-                                            'rgba(255, 205, 86, 0.5)',
-                                            'rgba(75, 192, 192, 0.5)',
-                                            'rgba(153, 102, 255, 0.5)',
-                                            'rgba(255, 99, 132, 0.5)',
-                                            'rgba(255, 159, 64, 0.5)',
-                                            'rgba(255, 205, 86, 0.5)'
-                                        ],
-                                        borderColor: [
-                                            'rgba(54, 162, 235, 1)',
-                                            'rgba(75, 192, 192, 1)',
-                                            'rgba(153, 102, 255, 1)',
-                                            'rgba(255, 99, 132, 1)',
-                                            'rgba(255, 159, 64, 1)',
-                                            'rgba(255, 205, 86, 1)',
-                                            'rgba(75, 192, 192, 1)',
-                                            'rgba(153, 102, 255, 1)',
-                                            'rgba(255, 99, 132, 1)',
-                                            'rgba(255, 159, 64, 1)',
-                                            'rgba(255, 205, 86, 1)'
-                                        ],
-                                        borderWidth: 1
-                                    }]
-                                },
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true,
-                                            ticks: {
-                                                precision: 0
+                const isDashboardPage = window.location.pathname === '/dashboard/';
+                if (isDashboardPage) {
+                    fetch('/dashboard/get_menu_stats')
+                        .then(response => response.json())
+                        .then(data => {
+                            const ctx = document.getElementById('menuStatsChart');
+                            if (ctx) {
+                                const chartCtx = ctx.getContext('2d');
+                                
+                                const labels = Object.keys(data.stats);
+                                const values = Object.values(data.stats);
+                                
+                                // 菜单名称映射
+                                const menuNames = {
+                                    'home': '仪表盘',
+                                    'order_download': '订单下载',
+                                    'order_delivery': '订单回传',
+                                    'refund_order': '退款单生成',
+                                    'exchange_order': '换货单生成',
+                                    'return_order_notice': '通知单入库',
+                                    'stockout_push': '出库单推送',
+                                    'return_order_entry': '退货单入库',
+                                    'allocation_out': '调拨出库',
+                                    'allocation_in': '调拨入库',
+                                    'inventory_adjust': '库存调整',
+                                    'inventory_out': '其他出库'
+                                };
+                                
+                                const formattedLabels = labels.map(label => menuNames[label] || label);
+                                
+                                new Chart(chartCtx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: formattedLabels,
+                                        datasets: [{
+                                            label: '请求次数',
+                                            data: values,
+                                            backgroundColor: [
+                                                'rgba(54, 162, 235, 0.5)',
+                                                'rgba(75, 192, 192, 0.5)',
+                                                'rgba(153, 102, 255, 0.5)',
+                                                'rgba(255, 99, 132, 0.5)',
+                                                'rgba(255, 159, 64, 0.5)',
+                                                'rgba(255, 205, 86, 0.5)',
+                                                'rgba(75, 192, 192, 0.5)',
+                                                'rgba(153, 102, 255, 0.5)',
+                                                'rgba(255, 99, 132, 0.5)',
+                                                'rgba(255, 159, 64, 0.5)',
+                                                'rgba(255, 205, 86, 0.5)'
+                                            ],
+                                            borderColor: [
+                                                'rgba(54, 162, 235, 1)',
+                                                'rgba(75, 192, 192, 1)',
+                                                'rgba(153, 102, 255, 1)',
+                                                'rgba(255, 99, 132, 1)',
+                                                'rgba(255, 159, 64, 1)',
+                                                'rgba(255, 205, 86, 1)',
+                                                'rgba(75, 192, 192, 1)',
+                                                'rgba(153, 102, 255, 1)',
+                                                'rgba(255, 99, 132, 1)',
+                                                'rgba(255, 159, 64, 1)',
+                                                'rgba(255, 205, 86, 1)'
+                                            ],
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true,
+                                                ticks: {
+                                                    precision: 0
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            });
-                        }
-                    });
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('加载菜单统计图表失败:', error);
+                        });
+                }
             }
             
             // 初始化菜单统计图表
