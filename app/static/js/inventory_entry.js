@@ -325,18 +325,24 @@ class InventoryEntryManager {
         }
     }
 
-    fallbackCopyJson(jsonText) {
+    fallbackCopyJson(text, index) {
         try {
             // 降级方案
             const textArea = document.createElement('textarea');
-            textArea.value = jsonText;
+            textArea.value = text;
             document.body.appendChild(textArea);
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
-            this.showToast('JSON已复制到剪贴板', 'success');
+            
+            // 根据是否提供index参数判断是复制JSON还是明细
+            if (typeof index !== 'undefined') {
+                this.showToast(`明细 ${index + 1} 已复制`, 'success');
+            } else {
+                this.showToast('JSON已复制到剪贴板', 'success');
+            }
         } catch (error) {
-            console.error('复制JSON失败:', error);
+            console.error('复制失败:', error);
             this.showToast('复制失败，请手动复制', 'error');
         }
     }
@@ -369,9 +375,16 @@ class InventoryEntryManager {
         const inputs = detailCard.querySelectorAll('input');
         const data = Array.from(inputs).map(input => input.value).join('\t');
         
-        navigator.clipboard.writeText(data).then(() => {
-            this.showToast(`明细 ${index + 1} 已复制`, 'success');
-        });
+        // 先检查navigator.clipboard是否可用
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(data).then(() => {
+                this.showToast(`明细 ${index + 1} 已复制`, 'success');
+            }).catch(() => {
+                this.fallbackCopyJson(data, index);
+            });
+        } else {
+            this.fallbackCopyJson(data, index);
+        }
     }
 
     removeDetail(index) {

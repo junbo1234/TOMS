@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
 <div class="container-fluid p-0">
@@ -91,7 +91,7 @@
                                min="1" max="10" value="1" required
                                data-fields='[
                                    {"label":"商品编码","idPrefix":"itemCode","namePrefix":"itemCode","placeholder":"请输入商品编码","required":true,"icon":"fas fa-barcode"},
-                                   {"label":"数量","idPrefix":"actualQty","namePrefix":"actualQty","placeholder":"请输入数量","required":true,"type":"number","min":1,"icon":"fas fa-sort-numeric-up"}
+                                   {"label":"数量","idPrefix":"actualQty","namePrefix":"actualQty","placeholder":"请输入数量","required":true,"type":"number","min":0,"icon":"fas fa-sort-numeric-up"}
                                ]'>
                     </div>
                 </div>
@@ -114,6 +114,9 @@
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
                         <i class="fas fa-undo me-2"></i>重置表单
                     </button>
+                    <a href="http://192.168.5.221:15672/#/queues/oms_test/sale_return_plan_add_back_b2c" target="_blank" class="btn btn-outline-info btn-lg">
+                        <i class="fas fa-broadcast-tower me-2"></i>直达MQ
+                    </a>
                 </div>
             </div>
         </div>

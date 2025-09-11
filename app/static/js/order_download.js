@@ -294,10 +294,23 @@ class OrderDownloadManager {
 
     copyJson() {
         const jsonText = this.jsonPreview.textContent;
-        navigator.clipboard.writeText(jsonText).then(() => {
-            this.showToast('JSON已复制到剪贴板', 'success');
-        }).catch(() => {
-            // 降级方案
+        // 先检查navigator.clipboard是否可用
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(jsonText).then(() => {
+                this.showToast('JSON已复制到剪贴板', 'success');
+            }).catch(() => {
+                this.fallbackCopyJson(jsonText);
+            });
+        } else {
+            this.fallbackCopyJson(jsonText);
+        }
+    }
+    
+    /**
+     * 降级复制方案
+     */
+    fallbackCopyJson(jsonText) {
+        try {
             const textArea = document.createElement('textarea');
             textArea.value = jsonText;
             document.body.appendChild(textArea);
@@ -305,7 +318,10 @@ class OrderDownloadManager {
             document.execCommand('copy');
             document.body.removeChild(textArea);
             this.showToast('JSON已复制到剪贴板', 'success');
-        });
+        } catch (error) {
+            console.error('复制JSON失败:', error);
+            this.showToast('复制失败，请手动复制', 'error');
+        }
     }
 
     toggleJsonExpansion() {

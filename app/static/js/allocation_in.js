@@ -411,18 +411,14 @@ class AllocationInManager {
             if (this.currentJsonData) {
                 const jsonText = JSON.stringify(this.currentJsonData, null, 2);
                 
-                // 尝试使用Clipboard API
-                if (navigator.clipboard) {
-                    navigator.clipboard.writeText(jsonText)
-                        .then(() => {
-                            this.showToast('JSON已复制到剪贴板', 'success');
-                        })
-                        .catch(err => {
-                            console.error('复制失败，使用回退方案:', err);
-                            this.fallbackCopy(jsonText);
-                        });
+                // 先检查navigator.clipboard是否可用
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(jsonText).then(() => {
+                        this.showToast('JSON已复制到剪贴板', 'success');
+                    }).catch(() => {
+                        this.fallbackCopy(jsonText);
+                    });
                 } else {
-                    // 直接使用回退方案
                     this.fallbackCopy(jsonText);
                 }
             } else {

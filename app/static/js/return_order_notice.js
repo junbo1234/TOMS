@@ -213,13 +213,18 @@ class ReturnOrderNoticeManager {
     }
 
     copyJson() {
-        const textArea = document.createElement('textarea');
-        textArea.value = this.jsonPreview.textContent;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-        this.showToast('JSON已复制到剪贴板', 'success');
+        try {
+            const textArea = document.createElement('textarea');
+            textArea.value = this.jsonPreview.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            this.showToast('JSON已复制到剪贴板', 'success');
+        } catch (error) {
+            console.error('复制失败:', error);
+            this.showToast('复制失败，请手动复制', 'error');
+        }
     }
 
     toggleJsonExpansion() {

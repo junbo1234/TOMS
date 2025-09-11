@@ -435,18 +435,34 @@ class OrderDeliveryManager {
      */
     copyJson() {
         const previewText = this.jsonPreview.textContent;
-        navigator.clipboard.writeText(previewText).then(() => {
-            this.showToast('JSON数据已复制到剪贴板', 'success');
-        }).catch(() => {
-            // 降级方案
+        // 先检查navigator.clipboard是否可用
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(previewText).then(() => {
+                this.showToast('JSON数据已复制到剪贴板', 'success');
+            }).catch(() => {
+                this.fallbackCopyJson(previewText);
+            });
+        } else {
+            this.fallbackCopyJson(previewText);
+        }
+    }
+    
+    /**
+     * 降级复制方案
+     */
+    fallbackCopyJson(jsonText) {
+        try {
             const textArea = document.createElement('textarea');
-            textArea.value = previewText;
+            textArea.value = jsonText;
             document.body.appendChild(textArea);
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
             this.showToast('JSON数据已复制到剪贴板', 'success');
-        });
+        } catch (error) {
+            console.error('复制JSON失败:', error);
+            this.showToast('复制失败，请手动复制', 'error');
+        }
     }
 
     /**

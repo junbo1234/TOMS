@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %}销售订单发货{% endblock %}
 
@@ -152,6 +152,9 @@
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
                         <i class="fas fa-undo me-2"></i>重置表单
                     </button>
+                    <a href="http://192.168.5.221:15672/#/queues/oms_test/sale_order_add_back" target="_blank" class="btn btn-outline-info btn-lg">
+                        <i class="fas fa-broadcast-tower me-2"></i>直达MQ
+                    </a>
                 </div>
             </div>
         </div>
@@ -253,8 +256,8 @@
 </div>
 
 <!-- 订单发货页面JavaScript -->
-<script>
-    window.preset = {{ preset|tojson|safe if preset is defined else '{}' }};
-</script>
+  <script>
+     window.preset = JSON.parse('{{ preset|tojson|safe if preset is defined else '{}' }}'.replace(/,\s*}\s*$/g, '}'));
+  </script>
 <script src="{{ url_for('static', filename='js/order_delivery.js') }}"></script>
 {% endblock %}

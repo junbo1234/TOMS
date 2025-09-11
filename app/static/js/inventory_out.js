@@ -336,18 +336,40 @@ class OtherAllocationOutManager {
 
     copyJson() {
         const jsonText = this.jsonPreview.textContent;
-        navigator.clipboard.writeText(jsonText).then(() => {
-            this.showToast('JSON已复制到剪贴板', 'success');
-        }).catch(() => {
-            // 降级方案
+        // 先检查navigator.clipboard是否可用
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(jsonText).then(() => {
+                this.showToast('JSON已复制到剪贴板', 'success');
+            }).catch(() => {
+                this.fallbackCopyJson(jsonText);
+            });
+        } else {
+            this.fallbackCopyJson(jsonText);
+        }
+    }
+    
+    /**
+     * 降级复制方案
+     */
+    fallbackCopyJson(text, index) {
+        try {
             const textArea = document.createElement('textarea');
-            textArea.value = jsonText;
+            textArea.value = text;
             document.body.appendChild(textArea);
             textArea.select();
             document.execCommand('copy');
             document.body.removeChild(textArea);
-            this.showToast('JSON已复制到剪贴板', 'success');
-        });
+            
+            // 根据是否提供index参数判断是复制JSON还是明细
+            if (typeof index !== 'undefined') {
+                this.showToast(`明细 ${index + 1} 已复制`, 'success');
+            } else {
+                this.showToast('JSON已复制到剪贴板', 'success');
+            }
+        } catch (error) {
+            console.error('复制失败:', error);
+            this.showToast('复制失败，请手动复制', 'error');
+        }
     }
 
     toggleJsonExpansion() {
@@ -378,9 +400,16 @@ class OtherAllocationOutManager {
         const inputs = detailCard.querySelectorAll('input');
         const data = Array.from(inputs).map(input => input.value).join('\t');
         
-        navigator.clipboard.writeText(data).then(() => {
-            this.showToast(`明细 ${index + 1} 已复制`, 'success');
-        });
+        // 先检查navigator.clipboard是否可用
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(data).then(() => {
+                this.showToast(`明细 ${index + 1} 已复制`, 'success');
+            }).catch(() => {
+                this.fallbackCopyJson(data, index);
+            });
+        } else {
+            this.fallbackCopyJson(data, index);
+        }
     }
 
     removeDetail(index) {
