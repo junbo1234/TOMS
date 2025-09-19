@@ -219,7 +219,7 @@ class AllocationInManager {
                 </div>
                 <div class="col-md-6">
                     <label for="actualQty_${index}" class="form-label">实际数量</label>
-                    <input type="number" id="actualQty_${index}" name="actualQty_${index}" class="form-control form-control-sm" placeholder="请输入实际数量" min="1">
+                    <input type="number" id="actualQty_${index}" name="actualQty_${index}" class="form-control form-control-sm" placeholder="请输入实际数量" min="0">
                 </div>
             </div>
         `;

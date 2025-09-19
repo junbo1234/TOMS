@@ -142,8 +142,8 @@ class ReturnOrderEntryManager {
       // 默认字段配置
       fieldsConfig = [
         { idPrefix: 'itemCode', namePrefix: 'itemCode', label: '商品编码', icon: 'fas fa-barcode', required: true },
-        { idPrefix: 'planQty', namePrefix: 'planQty', label: '计划数量', icon: 'fas fa-calculator', required: true, type: 'number', min: 1 },
-        { idPrefix: 'actualQty', namePrefix: 'actualQty', label: '实际数量', icon: 'fas fa-box-open', required: true, type: 'number', min: 1 }
+        { idPrefix: 'planQty', namePrefix: 'planQty', label: '计划数量', icon: 'fas fa-calculator', required: true, type: 'number', min: 0 },
+        { idPrefix: 'actualQty', namePrefix: 'actualQty', label: '实际数量', icon: 'fas fa-box-open', required: true, type: 'number', min: 0 }
       ];
       console.log('使用默认字段配置:', fieldsConfig);
     }

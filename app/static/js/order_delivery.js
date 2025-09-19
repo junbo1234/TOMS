@@ -107,7 +107,7 @@ class OrderDeliveryManager {
                 placeholder: "请输入发货数量",
                 required: true,
                 type: "number",
-                min: 1,
+                min: 0,
                 icon: "fas fa-sort-numeric-up"
             }
         ];

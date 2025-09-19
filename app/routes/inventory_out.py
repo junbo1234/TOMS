@@ -145,11 +145,11 @@ def submit():
 
             try:
                 actual_qty = int(form_data[actual_qty_key])
-                if actual_qty <= 0:
+                if actual_qty < 0:
                     raise ValueError()
             except ValueError:
                 logger.warning(f"明细 {i+1} 实际数量格式错误")
-                return jsonify({'status': 'error', 'message': f'明细 {i+1} 实际数量必须为正整数'}), 400
+                return jsonify({'status': 'error', 'message': f'明细 {i+1} 实际数量必须为非负整数'}), 400
 
             line = {
                 'actualQty': str(actual_qty),

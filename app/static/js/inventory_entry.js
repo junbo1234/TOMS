@@ -145,7 +145,7 @@ class InventoryEntryManager {
                        name="actualQty${index}" 
                        placeholder="请输入实际数量" 
                        required
-                       min="1">
+                       min="0">
             </div>
         `;
         row.appendChild(actualQtyCol);
