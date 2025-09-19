@@ -140,28 +140,10 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 2. 环境配置
-复制 `.env.example` 为 `.env` 文件，并根据实际环境配置以下参数：
-
-```bash
-# RabbitMQ配置
-RABBITMQ_HOST=localhost
-RABBITMQ_PORT=5672
-RABBITMQ_USERNAME=guest
-RABBITMQ_PASSWORD=guest
-RABBITMQ_VHOST=oms_test
-
-# Flask配置
-FLASK_ENV=development
-FLASK_DEBUG=True
-```
-
 ### 3. 启动应用
 ```bash
 python run.py
 ```
-
-应用将在 `http://192.168.52.42:5000` 启动（绑定到本地IP，确保局域网可访问）
 
 ## 局域网访问配置
 
