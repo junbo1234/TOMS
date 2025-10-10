@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="h3 fw-bold text-dark mb-1">
+                <i class="fas fa-boxes me-2 text-primary"></i>库存调整
+            </h2>
+            <p class="text-muted mb-0">提交库存调整请求</p>
+        </div>
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-question-circle me-1"></i>帮助
+            </button>
+            <button type="button" class="btn btn-outline-secondary btn-sm">
+                <i class="fas fa-cog me-1"></i>设置
+            </button>
+        </div>
+    </div>
+
+    <form id="inventory-adjustment-form" class="needs-validation" novalidate>
+        <!-- 基础信息区 -->
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white border-0">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2 text-primary"></i>调整信息
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-4">
+                    <!-- 商品编码 -->
+                    <div class="col-md-3">
+                        <label for="skuCode" class="form-label">
+                            商品编码 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-barcode"></i>
+                            </span>
+                            <input type="text" class="form-control" id="skuCode" name="skuCode" 
+                                   placeholder="示例：6926523473692" required>
+                        </div>
+                    </div>
+                    
+                    <!-- 数量 -->
+                    <div class="col-md-3">
+                        <label for="quantity" class="form-label">
+                            数量 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-sort-numeric-up"></i>
+                            </span>
+                            <input type="number" class="form-control" id="quantity" name="quantity" 
+                                   placeholder="示例：150000" min="1" required>
+                        </div>
+                    </div>
+                    
+                    <!-- 仓库编码 -->
+                    <div class="col-md-3">
+                        <label for="warehouseCode" class="form-label">
+                            仓库编码 <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-warehouse"></i>
+                            </span>
+                            <input type="text" class="form-control" id="warehouseCode" name="warehouseCode" 
+                                   placeholder="示例：DCN" required>
+                        </div>
+                    </div>
+                    
+                    <!-- 环境选择 -->
+                    <div class="col-md-3">
+                        <label for="apiEnv" class="form-label">
+                            API环境
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">
+                                <i class="fas fa-server"></i>
+                            </span>
+                            <select class="form-control" id="apiEnv" name="apiEnv">
+                                <option value="test">测试环境</option>
+                                <option value="uat">UAT环境</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 操作按钮区 -->
+        <div class="mb-4 d-flex justify-content-between">
+            <div>
+                <button type="button" id="preview-btn" class="btn btn-secondary me-2">
+                    <i class="fas fa-eye me-1"></i>预览参数
+                </button>
+                <button type="button" id="reset-btn" class="btn btn-outline-secondary">
+                    <i class="fas fa-redo-alt me-1"></i>重置
+                </button>
+            </div>
+            <div>
+                <button type="submit" id="submit-btn" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-1"></i>生成
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- 参数预览区 -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-header bg-white border-0">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-code me-2 text-primary"></i>接口参数预览
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-2 d-flex justify-content-between">
+                <div class="text-sm text-muted">参数格式：JSON</div>
+                <div class="text-sm">
+                    <button id="copy-json-btn" class="text-primary hover:text-primary-dark">
+                        <i class="far fa-copy me-1"></i>复制
+                    </button>
+                </div>
+            </div>
+            <pre id="json-preview" class="bg-gray-50 border rounded p-3 text-sm text-white h-72 overflow-auto whitespace-pre-wrap">
+{}
+            </pre>
+        </div>
+    </div>
+
+    <!-- 结果展示区 -->
+    <div class="card border-0 shadow-sm mb-4" id="result-card" style="display: none;">
+        <div class="card-header bg-white border-0">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-clipboard-check me-2 text-primary"></i>请求结果
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="mb-2">
+                <span id="result-status" class="badge bg-secondary">处理中</span>
+            </div>
+            <pre id="result-content" class="bg-gray-50 border rounded p-3 text-sm h-72 overflow-auto whitespace-pre-wrap">
+            </pre>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/inventory_adjustment.js"></script>
+{% endblock %}
