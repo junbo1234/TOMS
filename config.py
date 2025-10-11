@@ -9,7 +9,7 @@ load_dotenv()  # 加载.env文件
 class Config:
     # Flask配置
     DEBUG = True
-    PORT = 5000
+    PORT = 5002
 
     # 队列名称（与RabbitMQ管理界面一致）
     ORDER_DOWNLOAD_QUEUE = 'oms_sales_order_download_queue'  # 订单下载队列
@@ -138,7 +138,7 @@ class Config:
                         }
                     ],
                     "length": "0",
-                    "logisticsCode": "ZTKD",
+                    "logisticsCode": "ZT",
                     "logisticsName": "中通快运",
                     "packageMaterialList": [
                         {

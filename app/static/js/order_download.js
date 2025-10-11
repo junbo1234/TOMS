@@ -110,26 +110,57 @@ class OrderDownloadManager {
 
         fields.forEach(field => {
             const col = document.createElement('div');
-            col.className = 'col-md-4';
+            col.className = 'col-md-3'; // 4个字段，每个占3列
             
-            const fieldHtml = `
-                <label class="form-label">
-                    ${field.label} ${field.required ? '<span class="text-danger">*</span>' : ''}
-                </label>
-                <div class="input-group">
-                    <span class="input-group-text">
-                        <i class="${field.icon || 'fas fa-edit'}"></i>
-                    </span>
-                    <input type="${field.type || 'text'}" 
-                           class="form-control" 
-                           id="${field.idPrefix}${index}" 
-                           name="${field.namePrefix}${index}" 
-                           placeholder="${field.placeholder || ''}" 
-                           ${field.required ? 'required' : ''}
-                           ${field.min ? `min="${field.min}"` : ''}
-                           ${field.max ? `max="${field.max}"` : ''}>
-                </div>
-            `;
+            let fieldHtml = '';
+            
+            if (field.type === 'select') {
+                // 构建select元素
+                let optionsHtml = '';
+                if (field.options && Array.isArray(field.options)) {
+                    field.options.forEach(option => {
+                        optionsHtml += `<option value="${option.value}">${option.text}</option>`;
+                    });
+                }
+                
+                fieldHtml = `
+                    <label class="form-label">
+                        ${field.label} ${field.required ? '<span class="text-danger">*</span>' : ''}
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="${field.icon || 'fas fa-edit'}"></i>
+                        </span>
+                        <select class="form-control" 
+                                id="${field.idPrefix}${index}" 
+                                name="${field.namePrefix}${index}" 
+                                ${field.required ? 'required' : ''}>
+                            ${optionsHtml}
+                        </select>
+                    </div>
+                `;
+            } else {
+                // 构建普通input元素
+                fieldHtml = `
+                    <label class="form-label">
+                        ${field.label} ${field.required ? '<span class="text-danger">*</span>' : ''}
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="${field.icon || 'fas fa-edit'}"></i>
+                        </span>
+                        <input type="${field.type || 'text'}" 
+                               class="form-control" 
+                               id="${field.idPrefix}${index}" 
+                               name="${field.namePrefix}${index}" 
+                               placeholder="${field.placeholder || ''}" 
+                               ${field.required ? 'required' : ''}
+                               ${field.min ? `min="${field.min}"` : ''}
+                               ${field.max ? `max="${field.max}"` : ''}>
+                    </div>
+                `;
+            }
+            
             col.innerHTML = fieldHtml;
             row.appendChild(col);
         });
@@ -175,10 +206,15 @@ class OrderDownloadManager {
                 const platformOuterSkuCodeInput = document.getElementById(`platformOuterSkuCode${i}`);
                 const platformNoInput = document.getElementById(`platformNo${i}`);
                 const qtyInput = document.getElementById(`qty${i}`);
+                const isGiftInput = document.getElementById(`isGift${i}`);
                 
                 if (platformOuterSkuCodeInput) formData.set(`platformOuterSkuCode${i}`, platformOuterSkuCodeInput.value);
                 if (platformNoInput) formData.set(`platformNo${i}`, platformNoInput.value);
                 if (qtyInput) formData.set(`qty${i}`, qtyInput.value);
+                if (isGiftInput) {
+                    const isGiftValue = isGiftInput.value === '1' ? 1 : 0;
+                    formData.set(`isGift${i}`, isGiftValue.toString());
+                }
             }
 
             const response = await fetch('/order_download/submit', {
@@ -230,10 +266,15 @@ class OrderDownloadManager {
                 const platformOuterSkuCodeInput = document.getElementById(`platformOuterSkuCode${i}`);
                 const platformNoInput = document.getElementById(`platformNo${i}`);
                 const qtyInput = document.getElementById(`qty${i}`);
+                const isGiftInput = document.getElementById(`isGift${i}`);
                 
                 if (platformOuterSkuCodeInput) formData.set(`platformOuterSkuCode${i}`, platformOuterSkuCodeInput.value);
                 if (platformNoInput) formData.set(`platformNo${i}`, platformNoInput.value);
                 if (qtyInput) formData.set(`qty${i}`, qtyInput.value);
+                if (isGiftInput) {
+                    const isGiftValue = isGiftInput.value === '1' ? 1 : 0;
+                    formData.set(`isGift${i}`, isGiftValue.toString());
+                }
             }
             
             const data = Object.fromEntries(formData.entries());
@@ -264,7 +305,8 @@ class OrderDownloadManager {
                     ...this.preset.salesOrderDetailConvertDTOList[0],
                     platformOuterSkuCode: platformOuterSkuCode,
                     platformNo: platformNo,
-                    qty: qty
+                    qty: qty,
+                    isGift: parseInt(data[`isGift${i}`]) || 0
                 };
                 // 删除 sku 字段
                 delete detail.sku;

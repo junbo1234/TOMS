@@ -117,11 +117,11 @@
                         </span>
                         <input type="number" class="form-control" id="detail-count" name="detail_count" 
                                min="1" max="10" value="1" required
-                               data-fields='[
-                                   {"label":"商品SKU","idPrefix":"platformOuterSkuCode","namePrefix":"platformOuterSkuCode","placeholder":"请输入商品SKU","required":true,"icon":"fas fa-barcode"},
-                                   {"label":"子订单号","idPrefix":"platformNo","namePrefix":"platformNo","placeholder":"请输入子订单号","required":true,"icon":"fas fa-tag"},
-                                   {"label":"购买数量","idPrefix":"qty","namePrefix":"qty","placeholder":"请输入购买数量","required":true,"type":"number","min":0,"icon":"fas fa-sort-numeric-up"}
-                               ]'>
+                               data-fields="[{&quot;label&quot;:&quot;商品SKU&quot;,&quot;idPrefix&quot;:&quot;platformOuterSkuCode&quot;,&quot;namePrefix&quot;:&quot;platformOuterSkuCode&quot;,&quot;placeholder&quot;:&quot;请输入商品SKU&quot;,&quot;required&quot;:true,&quot;icon&quot;:&quot;fas fa-barcode&quot;},
+                               {&quot;label&quot;:&quot;子订单号&quot;,&quot;idPrefix&quot;:&quot;platformNo&quot;,&quot;namePrefix&quot;:&quot;platformNo&quot;,&quot;placeholder&quot;:&quot;请输入子订单号&quot;,&quot;required&quot;:true,&quot;icon&quot;:&quot;fas fa-tag&quot;},
+                               {&quot;label&quot;:&quot;购买数量&quot;,&quot;idPrefix&quot;:&quot;qty&quot;,&quot;namePrefix&quot;:&quot;qty&quot;,&quot;placeholder&quot;:&quot;请输入购买数量&quot;,&quot;required&quot;:true,&quot;type&quot;:&quot;number&quot;,&quot;min&quot;:1,&quot;icon&quot;:&quot;fas fa-sort-numeric-up&quot;},
+                               {&quot;label&quot;:&quot;是否赠品&quot;,&quot;idPrefix&quot;:&quot;isGift&quot;,&quot;namePrefix&quot;:&quot;isGift&quot;,&quot;placeholder&quot;:&quot;是否赠品&quot;,&quot;required&quot;:true,&quot;type&quot;:&quot;select&quot;,&quot;options&quot;:[{&quot;value&quot;:&quot;0&quot;,&quot;text&quot;:&quot;否&quot;},{&quot;value&quot;:&quot;1&quot;,&quot;text&quot;:&quot;是&quot;}],&quot;icon&quot;:&quot;fas fa-gift&quot;}
+                               ]">
                         <button type="button" class="btn btn-outline-secondary" id="generate-details">
                             <i class="fas fa-magic me-1"></i>生成
                         </button>
@@ -146,9 +146,6 @@
                     <button type="button" class="btn btn-outline-secondary btn-lg" id="reset-btn">
                         <i class="fas fa-undo me-2"></i>重置表单
                     </button>
-                    <a href="http://192.168.5.221:15672/#/queues/oms_test/oms_order_download_queue" target="_blank" class="btn btn-outline-info btn-lg">
-                        <i class="fas fa-broadcast-tower me-2"></i>直达MQ
-                    </a>
                 </div>
             </div>
         </div>
@@ -217,7 +214,7 @@
 
 <!-- 订单下载页面JavaScript -->
 <script>
-    window.preset = JSON.parse('{{ preset|tojson|safe if preset is defined else '{}' }}'.replace(/,\s*}\s*$/g, '}'));
+    window.preset = {{ preset|tojson|safe }};
 </script>
 <script src="{{ url_for('static', filename='js/order_download.js') }}"></script>
 {% endblock %}

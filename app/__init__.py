@@ -3,7 +3,7 @@
 # app/__init__.py
 from flask import Flask, redirect, url_for
 from config import config
-from app.routes import order_download, order_delivery, dashboard, refund_order, return_order_notice, stockout_push, return_order_entry, exchange_order, allocation_out, allocation_in, inventory_entry, inventory_out  # 导入蓝图
+from app.routes import order_download, order_delivery, dashboard, refund_order, return_order_notice, stockout_push, return_order_entry, exchange_order, allocation_out, allocation_in, inventory_entry, inventory_out, inventory_adjustment  # 导入蓝图
 import atexit
 
 
@@ -13,6 +13,15 @@ def create_app() -> Flask:
     """
     app = Flask(__name__)
     app.config.from_object(config)
+
+    # 添加一个特殊路由来提供根目录下的logo.svg文件
+    from flask import send_file
+    import os
+    @app.route('/logo.svg')
+    def serve_logo():
+        """提供根目录下的logo.svg文件"""
+        logo_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logo.svg')
+        return send_file(logo_path, mimetype='image/svg+xml')
 
     # 注册蓝图（订单下载：URL前缀/order_download）
     app.register_blueprint(order_download.order_download_bp)
@@ -36,9 +45,11 @@ def create_app() -> Flask:
     app.register_blueprint(allocation_in.allocation_in_bp)
     # 注册蓝图（其他入库：URL前缀/inventory_entry）
     app.register_blueprint(inventory_entry.inventory_entry_bp)
-    # 注册蓝图（其他出库：URL前缀/out）
+    # 注册蓝图（其他出库：URL前缀/inventory_out）
     app.register_blueprint(inventory_out.inventory_out_bp)
-
+    # 注册蓝图（库存调整：URL前缀/inventory_adjustment）
+    app.register_blueprint(inventory_adjustment.inventory_adjustment_bp)
+    
     # 根路径路由 - 重定向到仪表盘
     @app.route('/')
     def index():

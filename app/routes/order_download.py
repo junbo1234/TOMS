@@ -46,12 +46,13 @@ def submit():
                 'message': f'缺少必填字段: {", ".join(missing_fields)}'
             }), 400
 
-        # 3. 获取动态明细（platformOuterSkuCode、platformNo、qty）
+        # 3. 获取动态明细（platformOuterSkuCode、platformNo、qty、isGift）
         details = []
         for i in range(detail_count):
             platform_outer_sku_code = request.form.get(f'platformOuterSkuCode{i}')
             platform_no = request.form.get(f'platformNo{i}')
             qty = request.form.get(f'qty{i}')
+            is_gift = request.form.get(f'isGift{i}', '0')
             
             # 验证明细字段
             if not all([platform_outer_sku_code, platform_no, qty]):
@@ -63,7 +64,8 @@ def submit():
             details.append({
                 'platformOuterSkuCode': platform_outer_sku_code,
                 'platformNo': platform_no,
-                'qty': qty
+                'qty': qty,
+                'isGift': is_gift
             })
 
         # 4. 合并预设参数与用户输入（生成最终消息）
@@ -79,7 +81,8 @@ def submit():
                     **{k: v for k, v in config.ORDER_DOWNLOAD_PRESET['salesOrderDetailConvertDTOList'][0].items() if k != 'sku'},
                     'platformOuterSkuCode': detail['platformOuterSkuCode'],
                     'platformNo': detail['platformNo'],
-                    'qty': detail['qty']
+                    'qty': detail['qty'],
+                    'isGift': detail['isGift']
                 } for detail in details
             ],
             # 支付时间：更新到扩展字段
