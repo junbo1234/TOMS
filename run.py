@@ -7,8 +7,10 @@ from config import config
 app = create_app()
 
 if __name__ == '__main__':
+    # 开发环境使用，但建议在生产环境使用WSGI服务器
+    # 例如: gunicorn -w 4 -b 0.0.0.0:5002 wsgi:app
     app.run(
         host=config.HOST,
         port=config.PORT,
-        debug=config.DEBUG
+        debug=False  # 生产环境必须设置为False
     )

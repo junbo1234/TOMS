@@ -8,7 +8,7 @@ load_dotenv()  # 加载.env文件
 
 class Config:
     # Flask配置
-    DEBUG = True
+    DEBUG = False  # 生产环境必须设置为False，提高安全性
     PORT = 5002
     HOST = os.getenv('HOST', '0.0.0.0')  # 默认使用0.0.0.0，可通过.env配置覆盖
 
