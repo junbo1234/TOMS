@@ -10,6 +10,7 @@ class Config:
     # Flask配置
     DEBUG = True
     PORT = 5002
+    HOST = os.getenv('HOST', '0.0.0.0')  # 默认使用0.0.0.0，可通过.env配置覆盖
 
     # 队列名称（与RabbitMQ管理界面一致）
     ORDER_DOWNLOAD_QUEUE = 'oms_sales_order_download_queue'  # 订单下载队列
